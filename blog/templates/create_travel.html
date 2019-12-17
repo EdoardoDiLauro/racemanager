@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="post" action="">
+        {% if form.errors %}
+        {{form.errors}}
+        {%endif%}
+        {{ form.hidden_tag() }}
+        {{form.csrf_token }}
+        <fieldset class="input-group">
+            <legend class="border-bottom mb-4">Travel Page</legend>
+
+             <div class="form-group">
+                {{ form.destination.label(class="form-control-label") }}
+                {% if form.destination.errors %}
+                {{ form.destination(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for errors in form.destination.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.destination(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+              <div class="form-group">
+                {{ form.budget.label(class="form-control-label") }}
+                {% if form.budget.errors %}
+                {{ form.budget(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for errors in form.budget.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.budget(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+              <div class="form-group">
+                {{ form.duration.label(class="form-control-label") }}
+                {% if form.duration.errors %}
+                {{ form.duration(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for errors in form.duration.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.duration(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.participants.label(class="form-control-label") }}
+                {% if form.participants.errors %}
+                {{ form.participants(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for errors in form.participants.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.participants(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+              <div class="form-group">
+                {{ form.description.label(class="form-control-label") }}
+                {% if form.description.errors %}
+                {{ form.description(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for errors in form.description.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.description(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

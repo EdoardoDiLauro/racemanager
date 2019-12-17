@@ -9,7 +9,7 @@
         {% if post.author == current_user %}
           <div>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
-            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('posts.delete_post', post_id=post.id) }}">Delete</a>
           </div>
         {% endif %}
       </div>
@@ -65,6 +65,7 @@
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + comment.commenter.image_file) }}">
           <div class="media-body">
             <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.user_posts', username=comment.commenter.username) }}">{{ comment.commenter.username }}</a>
               <small class="text-muted">{{ comment.date_commented.strftime('%Y-%m-%d') }}</small>
             </div>
             <p class="article-content">{{ comment.content }}</p>

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField
+from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired
 
 
@@ -12,6 +12,6 @@ class TravelForm (FlaskForm) :
                         validators=[DataRequired()])
     participants = StringField('Participants',
                         validators=[DataRequired()])
-    description = StringField('Type of travel',
+    description = TextAreaField('Description',
                         validators=[DataRequired()])
     submit = SubmitField('Create Travel')

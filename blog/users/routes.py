@@ -1,7 +1,7 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint, app
+from flask import render_template, url_for, flash, redirect, request, Blueprint, app, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from blog import db, bcrypt
-from blog.models import User, Post, Travel
+from blog.models import User, Post, Travel, Booking
 from blog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    RequestResetForm, ResetPasswordForm)
 from blog.users.utils import save_picture, send_reset_email
@@ -111,3 +111,19 @@ def reset_token(token):
         return redirect(url_for('users.login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
 
+@users.route("/bookings", methods=['GET', 'POST'])
+@login_required
+def bookings():
+    bookings = Booking.query.filter_by(customer=current_user).order_by(Booking.date_booked.desc())
+    return render_template('bookings.html', bookings=bookings)
+
+@users.route("/booking/<int:booking_id>/delete", methods=['GET','POST'])
+@login_required
+def delete_booking(booking_id):
+    booking = Booking.query.get_or_404(booking_id)
+    if booking.customer != current_user:
+        abort(403)
+    db.session.delete(booking)
+    db.session.commit()
+    flash('Your booking has been deleted!', 'success')
+    return redirect(url_for('main.home'))

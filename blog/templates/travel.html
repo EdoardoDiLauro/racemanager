@@ -1,89 +1,107 @@
 {% extends "layout.html" %}
 {% block content %}
+  <article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + travel.creator.image_file) }}">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{{ url_for('users.user_posts', username=travel.creator.username) }}">{{ travel.creator.username }}</a>
+        <small class="text-muted">{{ travel.date_posted.strftime('%Y-%m-%d') }}</small>
+        {% if travel.creator == current_user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('travels.update_travel', travel_id=travel.id) }}">Update</a>
+            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+          </div>
+        {% endif %}
+          {% if booked==false and travel.available != 0 %}
+          <div>
+          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('travels.join_travel', travel_id=travel.id) }}">Join this trip!</a>
+          </div>
+          {% endif %}
+      </div>
+      <h2 class="article-title">{{ travel.destination }}</h2>
+      <p class="article-content">{{ travel.description }}</p>
+    </div>
+  </article>
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete travel?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('travels.delete_travel', travel_id=travel.id) }}" method="travel">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 <div class="content-section">
-    <form method="post" action="">
-        {% if form.errors %}
-        {{form.errors}}
-        {%endif%}
+    <form method="POST" action="">
         {{ form.hidden_tag() }}
-        {{form.csrf_token }}
-        <fieldset class="input-group">
-            <legend class="border-bottom mb-4">Travel Page</legend>
-
-             <div class="form-group">
-                {{ form.destination.label(class="form-control-label") }}
-                {% if form.destination.errors %}
-                {{ form.destination(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for errors in form.destination.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.destination(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
-              <div class="form-group">
-                {{ form.budget.label(class="form-control-label") }}
-                {% if form.budget.errors %}
-                {{ form.budget(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for errors in form.budget.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.budget(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
-              <div class="form-group">
-                {{ form.duration.label(class="form-control-label") }}
-                {% if form.duration.errors %}
-                {{ form.duration(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for errors in form.duration.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.duration(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
             <div class="form-group">
-                {{ form.participants.label(class="form-control-label") }}
-                {% if form.participants.errors %}
-                {{ form.participants(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for errors in form.participants.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
+                {{ form.title.label(class="form-control-label") }}
+                {% if form.title.errors %}
+                    {{ form.title(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
                 {% else %}
-                {{ form.participants(class="form-control form-control-lg") }}
+                    {{ form.title(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
-              <div class="form-group">
-                {{ form.description.label(class="form-control-label") }}
-                {% if form.description.errors %}
-                {{ form.description(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for errors in form.description.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
+            <div class="form-group">
+                {{ form.trip.label(class="form-control-label") }}
+                {% if form.trip.errors %}
+                    {{ form.trip(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.trip.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
                 {% else %}
-                {{ form.description(class="form-control form-control-lg") }}
+                    {{ form.trip(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
-
-
+            <div class="form-group">
+                {{ form.content.label(class="form-control-label") }}
+                {% if form.content.errors %}
+                    {{ form.content(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.content.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.content(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
     </form>
 </div>
+{% for post in posts %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+              <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+            </div>
+            <p class="article-content">{{ post.content }}</p>
+          </div>
+        </article>
+{% endfor %}
+
 {% endblock content %}
