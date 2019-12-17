@@ -29,13 +29,15 @@ def create_app(config_class=Config):
     from blog.posts.routes import posts
     from blog.main.routes import main
     #from blog.errors.handlers import errors
+
+    db.create_all(app=app)
+
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(travels)
     app.register_blueprint(main)
     #app.register_blueprint(errors)
 
-    db.create_all()
 
 
     return app

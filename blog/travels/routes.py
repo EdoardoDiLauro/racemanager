@@ -2,7 +2,7 @@ from flask import render_template, request, Blueprint, redirect, url_for, flash
 from flask_login import current_user
 
 from blog import db
-from models import Travel
+from blog.models import Travel
 from travels.forms import TravelForm
 
 travels = Blueprint('travels', __name__)

@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from blog import db
-from blog.models import Post
+from blog.models import Post, Travel
 from blog.posts.forms import PostForm
 
 posts = Blueprint('posts', __name__)
@@ -12,8 +12,10 @@ posts = Blueprint('posts', __name__)
 @login_required
 def new_post():
     form = PostForm()
+    form.trip.choices =  [(g.id, g.destination) for g in Travel.query.order_by(Travel.date_posted.desc())]
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        trip = Travel.query.get(form.trip.data)
+        post = Post(title=form.title.data, content=form.content.data, author=current_user, trip=trip)
         db.session.add(post)
         db.session.commit()
         flash('Your post has been created!', 'success')
