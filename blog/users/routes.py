@@ -123,6 +123,8 @@ def delete_booking(booking_id):
     booking = Booking.query.get_or_404(booking_id)
     if booking.customer != current_user:
         abort(403)
+    travel = Travel.query.filter_by(id=booking.trip.id).first()
+    travel.available = travel.available + 1
     db.session.delete(booking)
     db.session.commit()
     flash('Your booking has been deleted!', 'success')

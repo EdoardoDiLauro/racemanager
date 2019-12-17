@@ -33,8 +33,8 @@ def travel(travel_id):
     posts = Post.query.filter_by(trip=travel).order_by(Post.date_posted.desc())
     form = PostForm()
     form.trip.choices = [(travel.id, travel.destination)]
-    user = Booking.query.filter_by(customer=current_user).filter_by(trip=travel)
-    if user.__sizeof__() is not None:
+    flag = Booking.query.filter_by(customer=current_user).filter_by(trip=travel).first()
+    if flag:
         booked = True
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user, trip=travel)
