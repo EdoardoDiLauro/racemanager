@@ -4,6 +4,7 @@ from flask_login import current_user, login_required
 from blog import db
 from blog.models import Post, Travel, Comment
 from blog.posts.forms import PostForm, CommentForm
+from posts.utils import save_picture
 
 posts = Blueprint('posts', __name__)
 
@@ -17,6 +18,13 @@ def new_post():
     if form.validate_on_submit():
         if form.trip.data=='':
             post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        elif form.trip.data=='' and form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            post = Post(title=form.title.data, content=form.content.data, author=current_user, image_file=picture_file)
+        elif form.picture.data:
+            trip = Travel.query.get(form.trip.data)
+            picture_file = save_picture(form.picture.data)
+            post = Post(title=form.title.data, content=form.content.data, author=current_user, trip=trip, image_file=picture_file)
         else:
             trip = Travel.query.get(form.trip.data)
             post = Post(title=form.title.data, content=form.content.data, author=current_user, trip=trip)

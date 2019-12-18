@@ -33,6 +33,7 @@ def travel(travel_id):
     posts = Post.query.filter_by(trip=travel).order_by(Post.date_posted.desc())
     form = PostForm()
     form.trip.choices = [(travel.id, travel.destination)]
+    bookings = Booking.query.filter_by(customer=current_user).filter_by(trip=travel)
     flag = Booking.query.filter_by(customer=current_user).filter_by(trip=travel).first()
     if flag:
         booked = True
@@ -41,7 +42,7 @@ def travel(travel_id):
         db.session.add(post)
         db.session.commit()
         flash('Your post has been added!', 'success')
-    return render_template('travel.html', title=travel.destination, booked=booked, travel=travel, posts=posts, form=form, legend='Add Post')
+    return render_template('travel.html', title=travel.destination, booked=booked, travel=travel, posts=posts, form=form, bookings=bookings, legend='Add Post')
 
 @travels.route("/travel/<int:travel_id>/update", methods=['GET', 'POST'])
 @login_required

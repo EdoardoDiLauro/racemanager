@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1 class="mb-3">Posts by {{ user.username }} ({{ posts.total }})</h1>
-    {% for post in posts.items %}
+    <h1 class="mb-3">Posts by {{ user.username }} </h1>
+    {% for post in posts %}
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
           <div class="media-body">
@@ -14,20 +14,11 @@
           </div>
         </article>
     {% endfor %}
-    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-      {% if page_num %}
-        {% if posts.page == page_num %}
-          <a class="btn btn-info mb-4" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
-        {% else %}
-          <a class="btn btn-outline-info mb-4" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
-        {% endif %}
-      {% else %}
-        ...
-      {% endif %}
-    {% endfor %}
+
 {% endblock content %}
 {% block feed %}
-    {% for travel in travels.items %}
+<h2>Travels by this user</h2>
+    {% for travel in travels %}
         <article class="media content-section">
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + travel.creator.image_file) }}">
           <div class="media-body">
@@ -39,15 +30,5 @@
           </div>
         </article>
     {% endfor %}
-    {% for page_num in travels.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-      {% if page_num %}
-        {% if travels.page == page_num %}
-          <a class="btn btn-info mb-4" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
-        {% else %}
-          <a class="btn btn-outline-info mb-4" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
-        {% endif %}
-      {% else %}
-        ...
-      {% endif %}
-    {% endfor %}
+
 {% endblock feed %}

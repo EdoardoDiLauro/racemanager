@@ -11,8 +11,7 @@
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('travels.update_travel', travel_id=travel.id) }}">Update</a>
             <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
           </div>
-        {% endif %}
-        {% if booked==false and travel.available > 0 %}
+        {% elif booked==false and travel.available > 0 %}
           <div>
           <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('travels.join_travel', travel_id=travel.id) }}">Join this trip!</a>
           </div>
@@ -105,3 +104,17 @@
 {% endfor %}
 
 {% endblock content %}
+{% block feed %}
+<h2>Booked Users</h2>
+    {% for booking in bookings %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + booking.customer.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <small class="text-muted">{{ travel.date_posted.strftime('%Y-%m-%d') }}</small>
+            </div>
+              <a class="mr-2" href="{{ url_for('users.user_posts', username=booking.customer.username) }}">{{ booking.customer.username }}</a>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock feed %}
