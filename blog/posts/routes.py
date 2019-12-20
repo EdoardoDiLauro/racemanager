@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 from blog import db
 from blog.models import Post, Travel, Comment
 from blog.posts.forms import PostForm, CommentForm
-from posts.utils import save_picture
+from blog.posts.utils import save_picture
 
 posts = Blueprint('posts', __name__)
 
@@ -59,6 +59,9 @@ def update_post(post_id):
     form = PostForm()
     form.trip.choices = [(g.id, g.destination) for g in Travel.query.order_by(Travel.date_posted.desc())]
     if form.validate_on_submit():
+        if form.picture.data :
+            picture_file = save_picture(form.picture.data)
+            post.image_file=picture_file
         trip = Travel.query.get(form.trip.data)
         post.trip = trip
         post.title = form.title.data

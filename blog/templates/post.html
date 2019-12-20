@@ -15,7 +15,9 @@
       </div>
       <h2 class="article-title">{{ post.title }}</h2>
       <p class="article-content">{{ post.content }}</p>
-      <img class="rounded-circle account-img" src="{{ image_file }}">
+        {% if post.image_file  %}
+              <img class="img-fluid" src="{{ url_for('static', filename='post_pics/' + post.image_file)}}">
+        {% endif %}
     </div>
   </article>
   <!-- Modal -->
@@ -37,6 +39,10 @@
       </div>
     </div>
   </div>
+
+{% endblock content %}
+{% block feed %}
+
 <div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
@@ -73,5 +79,4 @@
           </div>
         </article>
 {% endfor %}
-
-{% endblock content %}
+{% endblock feed%}

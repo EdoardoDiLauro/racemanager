@@ -5,6 +5,7 @@ from blog import db
 from blog.models import Travel, Post, Booking
 from posts.forms import PostForm
 from travels.forms import TravelForm
+from travels.utils import save_picture
 
 travels = Blueprint('travels', __name__)
 
@@ -17,7 +18,12 @@ def create_travel():
         return redirect(url_for('main.home'))
     form = TravelForm()
     if form.validate_on_submit():
-        new_travel = Travel(destination=form.destination.data, duration=form.duration.data, budget=form.budget.data,
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            new_travel = Travel(destination=form.destination.data, duration=form.duration.data, budget=form.budget.data,
+                                participants=form.participants.data, description=form.description.data,
+                                user_id=current_user.id, available=form.participants.data, image_file=picture_file)
+        else:        new_travel = Travel(destination=form.destination.data, duration=form.duration.data, budget=form.budget.data,
                             participants=form.participants.data,description = form.description.data, user_id=current_user.id, available=form.participants.data)
         db.session.add(new_travel)
         db.session.commit()
@@ -52,6 +58,9 @@ def update_travel(travel_id):
         abort(403)
     form = TravelForm()
     if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            travel.image_file= picture_file
         travel.budget = form.budget.data
         travel.duration = form.duration.data
         travel.participants = form.participants.data
