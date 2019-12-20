@@ -39,7 +39,7 @@ def travel(travel_id):
     posts = Post.query.filter_by(trip=travel).order_by(Post.date_posted.desc())
     form = PostForm()
     form.trip.choices = [(travel.id, travel.destination)]
-    bookings = Booking.query.filter_by(customer=current_user).filter_by(trip=travel)
+    bookings = Booking.query.filter_by(trip=travel)
     flag = Booking.query.filter_by(customer=current_user).filter_by(trip=travel).first()
     if flag:
         booked = True
