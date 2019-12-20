@@ -13,7 +13,12 @@
           </div>
         {% elif booked==false and travel.available > 0 %}
           <div>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('users.contact_user', username=user.username) }}">Contact this User</a>
           <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('travels.join_travel', travel_id=travel.id) }}">Join this trip!</a>
+          </div>
+        {% else %}
+          <div>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('users.contact_user', username=user.username) }}">Contact this User</a>
           </div>
         {% endif %}
       </div>
