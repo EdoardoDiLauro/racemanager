@@ -3,8 +3,10 @@ from flask_login import login_user, current_user, logout_user, login_required
 from blog import db, bcrypt
 from blog.models import User, Post, Travel, Booking
 from blog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
-                                   RequestResetForm, ResetPasswordForm)
+                                   RequestResetForm, ResetPasswordForm, ContactForm)
 from blog.users.utils import save_picture, send_reset_email
+from flask_mail import Message
+from blog import mail
 
 users = Blueprint('users', __name__)
 
@@ -123,3 +125,18 @@ def delete_booking(booking_id):
     db.session.commit()
     flash('Your booking has been deleted!', 'success')
     return redirect(url_for('main.home'))
+
+
+@users.route("/user/<string:username>/contact", methods=['GET','POST'])
+@login_required
+def contact_user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    form = ContactForm()
+    if form.validate_on_submit():
+        msg = Message(form.subject.data, body=form.body.data, sender=current_user.email, recipients=[user.email])
+        mail.send(msg)
+        flash('Your message has been sent!', 'success')
+        return redirect(url_for('users.user_posts', username=username))
+    return render_template('contact.html', title='Contact User', form=form, dest=user)
+
+

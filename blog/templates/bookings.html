@@ -1,17 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
+<h2>Active Bookings</h2>
     {% for booking in bookings %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
                 <small class="text-muted">{{ booking.date_booked.strftime('%Y-%m-%d')  }}</small>
             </div>
-               {% if booking.customer == current_user %}
           <div>
               <a class="mr-2" href="{{ url_for('travels.travel', travel_id=booking.trip.id) }}">{{ booking.trip.destination }}</a>
               <a class="btn btn-danger btn-sm m-1" href="{{ url_for('users.delete_booking', booking_id=booking.id) }}">Delete</a>
           </div>
-        {% endif %}
           </div>
         </article>
     {% endfor %}

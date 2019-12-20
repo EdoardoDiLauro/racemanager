@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
+    {% if user != current_user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('users.contact_user', username=user.username) }}">Contact this User</a>
+          </div>
+    {% endif %}
     <h1 class="mb-3">Posts by {{ user.username }} </h1>
     {% for post in posts %}
         <article class="media content-section">
