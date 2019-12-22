@@ -79,12 +79,13 @@ def update_travel(travel_id):
                            form=form, legend='Update travel')
 
 
-@travels.route("/travel/<int:travel_id>/delete", methods=['POST'])
+@travels.route("/travel/<int:travel_id>/delete", methods=['GET','POST'])
 @login_required
 def delete_travel(travel_id):
     travel = Travel.query.get_or_404(travel_id)
     if travel.creator != current_user:
         abort(403)
+    Booking.query.filter_by(trip=travel).delete(synchronize_session='evaluate')
     db.session.delete(travel)
     db.session.commit()
     flash('Your travel has been deleted!', 'success')

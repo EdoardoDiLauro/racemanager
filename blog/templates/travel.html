@@ -9,7 +9,7 @@
         {% if travel.creator == current_user %}
           <div>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('travels.update_travel', travel_id=travel.id) }}">Update</a>
-            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('travels.delete_travel', travel_id=travel.id) }}">Delete</a>
           </div>
         {% elif booked==false and travel.available > 0 %}
           <div>
