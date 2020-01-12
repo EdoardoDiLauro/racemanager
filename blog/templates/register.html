@@ -2,9 +2,7 @@
 {% block content %}
    <div class="content-section">
      <form method="post" action="">
-         {% if form.errors %}
-         {{form.errors}}
-         {%endif%}
+
          {{ form.hidden_tag() }}
          {{form.csrf_token }}
          <fieldset class="form-group">
@@ -14,11 +12,11 @@
                  {% if form.name.errors %}
                     {{ form.name(class="form-control form-control-lg is-invalid") }}
                      <div class="invalid-feedback">
-                        {% for errors in form.name.errors %}
+                        {% for error in form.name.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                      </div>
-                     {% else %}
+                 {% else %}
                             {{ form.name(class="form-control form-control-lg") }}
                  {% endif %}
              </div>
@@ -27,11 +25,11 @@
                  {% if form.surname.errors %}
                     {{ form.surname(class="form-control form-control-lg is-invalid") }}
                      <div class="invalid-feedback">
-                        {% for errors in form.surname.errors %}
+                        {% for error in form.surname.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                      </div>
-                     {% else %}
+                 {% else %}
                             {{ form.surname(class="form-control form-control-lg") }}
                  {% endif %}
              </div>
@@ -40,11 +38,11 @@
                  {% if form.id.errors %}
                     {{ form.id(class="form-control form-control-lg is-invalid") }}
                      <div class="invalid-feedback">
-                        {% for errors in form.id.errors %}
+                        {% for error in form.id.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                      </div>
-                     {% else %}
+                 {% else %}
                             {{ form.id(class="form-control form-control-lg") }}
                  {% endif %}
 
@@ -53,11 +51,11 @@
                  {% if form.username.errors %}
                     {{ form.username(class="form-control form-control-lg is-invalid") }}
                      <div class="invalid-feedback">
-                        {% for errors in form.username.errors %}
+                        {% for error in form.username.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                      </div>
-                     {% else %}
+                 {% else %}
                             {{ form.username(class="form-control form-control-lg") }}
                  {% endif %}
              </div>
@@ -66,11 +64,11 @@
                  {% if form.email.errors %}
                     {{ form.email(class="form-control form-control-lg is-invalid") }}
                      <div class="invalid-feedback">
-                        {% for errors in form.email.errors %}
+                        {% for error in form.email.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                      </div>
-                     {% else %}
+                 {% else %}
                             {{ form.email(class="form-control form-control-lg") }}
 
                  {% endif %}
@@ -80,11 +78,11 @@
                  {% if form.password.errors %}
                     {{ form.password(class="form-control form-control-lg is-invalid") }}
                      <div class="invalid-feedback">
-                        {% for errors in form.password.errors %}
+                        {% for error in form.password.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                      </div>
-                     {% else %}
+                 {% else %}
                             {{ form.password(class="form-control form-control-lg") }}
 
                  {% endif %}
@@ -94,11 +92,11 @@
                  {% if form.confirm_password.errors %}
                     {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
                      <div class="invalid-feedback">
-                        {% for errors in form.confirm_password.errors %}
+                        {% for error in form.confirm_password.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                      </div>
-                     {% else %}
+                 {% else %}
                             {{ form.confirm_password(class="form-control form-control-lg") }}
 
                  {% endif %}

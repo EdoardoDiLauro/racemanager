@@ -18,7 +18,7 @@
 {% endblock content %}
 {% block feed %}
 <h2>Travels</h2>
-    {% for travel in travels.items %}
+    {% for travel in travels %}
         <article class="media content-section">
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + travel.creator.image_file) }}">
           <div class="media-body">
