@@ -14,6 +14,9 @@
         {% endif %}
       </div>
       <h2 class="article-title">{{ post.title }}</h2>
+        {% if post.trip %}
+        <h4><a class="article-title" href="{{ url_for('travels.travel', travel_id=post.trip.id) }}">About travel to: {{ post.trip.destination }}</a></h4>
+        {% endif %}
       <p class="article-content">{{ post.content }}</p>
         {% if post.image_file  %}
               <img class="img-fluid" src="{{ url_for('static', filename='post_pics/' + post.image_file)}}">

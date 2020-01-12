@@ -8,6 +8,9 @@
                 <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d')  }}</small>
             </div>
                 <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+              {% if post.trip %}
+              <h4><a class="article-title" href="{{ url_for('travels.travel', travel_id=post.trip.id) }}">About travel to: {{ post.trip.destination }}</a></h4>
+              {% endif %}
               <p class="article-content">{{ post.content }}</p>
               {% if post.image_file  %}
               <img class="img-fluid" src="{{ url_for('static', filename='post_pics/' + post.image_file)}}">
