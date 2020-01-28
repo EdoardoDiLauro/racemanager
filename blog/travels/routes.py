@@ -65,7 +65,8 @@ def update_travel(travel_id):
         travel.duration = form.duration.data
         travel.participants = form.participants.data
         travel.description = form.description.data
-        post = Post(title="Modifica Viaggio {}".format(travel.destination), content="Viaggio a {} Modificato, contattare organizzatore".format(travel.destination), author=current_user, trip=travel)
+        post = Post(title="Modifica Viaggio {}".format(travel.destination),
+                    content="Viaggio a {} Modificato, contattare organizzatore".format(travel.destination), author=current_user, trip=travel)
         db.session.add(post)
         db.session.commit()
         flash('Your travel has been updated!', 'success')
