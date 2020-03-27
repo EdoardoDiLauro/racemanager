@@ -9,24 +9,25 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <link href="offcanvas.css" rel="stylesheet">
-    <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/offcanvas/">
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/offcanvas/">
         <link rel="stylesheet" type="text/css" href="custom.css">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
 
 
 
     {% if title %}
-    <title> Travel - {{ title }} </title>
+    <title> RM - {{ title }} </title>
     {% else %}
-    <title>Travel</title>
+    <title>RaceManager</title>
     {% endif %}
 </head>
 <body>
 <header class="site-header">
     <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
-            <a class="navbar-brand mr-4" href="/">JoinTheTravel</a>
+            <a class="navbar-brand mr-4" href="/">RaceManager</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
                     aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -34,19 +35,35 @@
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
-                    <a class="nav-item nav-link" href="{{ url_for('travels.create_travel') }}">New Travel</a>
-                     <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">New Post</a>
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if current_user.is_authenticated %}
-                    <a class="nav-item nav-link" href="{{ url_for('users.user_posts', username=current_user.username) }}">Profile</a>
-                    <a class="nav-item nav-link" href="{{ url_for('users.bookings') }}">Active Bookings</a>
-                    <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Update Account</a>
-                    <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Attività</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="{{ url_for('activities.panoramica') }}">Panoramica</a>
+                          <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Inserimento</h6>
+                            <a class="dropdown-item" href="{{ url_for('activities.create_stage') }}">Impiego</a>
+                            <a class="dropdown-item" href="{{ url_for('activities.create_stay') }}">Struttura</a>
+                            <a class="dropdown-item" href="{{ url_for('activities.create_transport') }}">Trasporto</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Gruppi</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="{{ url_for('activities.panoramica') }}">Panoramica</a>
+                            <a class="dropdown-item" href="{{ url_for('groups.new_group') }}">Inserimento</a>
+                        </div>
+                    </li>
+                    <a class="nav-item nav-link" href="{{ url_for('races.account') }}">Aggiornamento Dati</a>
+                    <a class="nav-item nav-link" href="{{ url_for('races.logout') }}">Logout</a>
                     {% else %}
-                    <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
-                    <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
+                    <a class="nav-item nav-link" href="{{ url_for('races.login') }}">Accesso</a>
+                    <a class="nav-item nav-link" href="{{ url_for('races.register') }}">Registrazione</a>
                     {% endif %}
                 </div>
             </div>
@@ -81,12 +98,17 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
-            <p>The journey of a thousand miles begins with a single step.</p>
-          Matteo La Rosa, Benedetta La Rosa, Tommaso Scarrone, Gianluca Savina, Edoardo Di Lauro, Davide Iovino
+            <p>RaceManager</p>
 
         </div>
   		</div>
   	</div>
   </footer>
+
+<!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
 </body>

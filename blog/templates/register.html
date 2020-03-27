@@ -6,45 +6,7 @@
          {{ form.hidden_tag() }}
          {{form.csrf_token }}
          <fieldset class="form-group">
-             <legend class="border-bottom mb-4">Join Today</legend>
-             <div class="form-group">
-                 {{ form.name.label(class="form-control-label") }}
-                 {% if form.name.errors %}
-                    {{ form.name(class="form-control form-control-lg is-invalid") }}
-                     <div class="invalid-feedback">
-                        {% for error in form.name.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                     </div>
-                 {% else %}
-                            {{ form.name(class="form-control form-control-lg") }}
-                 {% endif %}
-             </div>
-             <div class="form-group">
-                 {{ form.surname.label(class="form-control-label") }}
-                 {% if form.surname.errors %}
-                    {{ form.surname(class="form-control form-control-lg is-invalid") }}
-                     <div class="invalid-feedback">
-                        {% for error in form.surname.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                     </div>
-                 {% else %}
-                            {{ form.surname(class="form-control form-control-lg") }}
-                 {% endif %}
-             </div>
-             <div class="form-group">
-                 {{ form.id.label(class="form-control-label") }}
-                 {% if form.id.errors %}
-                    {{ form.id(class="form-control form-control-lg is-invalid") }}
-                     <div class="invalid-feedback">
-                        {% for error in form.id.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                     </div>
-                 {% else %}
-                            {{ form.id(class="form-control form-control-lg") }}
-                 {% endif %}
+             <legend class="border-bottom mb-4">Registrazione Nuova Gara</legend>
 
              <div class="form-group">
                  {{ form.username.label(class="form-control-label") }}
@@ -70,6 +32,34 @@
                      </div>
                  {% else %}
                             {{ form.email(class="form-control form-control-lg") }}
+
+                 {% endif %}
+             </div>
+             <div class="form-group">
+                 {{ form.inizio.label(class="form-control-label") }}
+                 {% if form.inizio.errors %}
+                    {{ form.inizio(class="form-control form-control-lg is-invalid") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.inizio.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                     </div>
+                 {% else %}
+                            {{ form.inizio(class="form-control form-control-lg") }}
+
+                 {% endif %}
+             </div>
+             <div class="form-group">
+                 {{ form.fine.label(class="form-control-label") }}
+                 {% if form.fine.errors %}
+                    {{ form.fine(class="form-control form-control-lg is-invalid") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.fine.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                     </div>
+                 {% else %}
+                            {{ form.fine(class="form-control form-control-lg") }}
 
                  {% endif %}
              </div>
@@ -110,7 +100,7 @@
    </div>
     <div class="border-top pt-3">
         <small class="text-muted">
-            Already have an account? <a class="ml-2" href="{{ url_for('users.login') }}">Sign In</a>
+            Gara già registrata? <a class="ml-2" href="{{ url_for('races.login') }}">Accesso</a>
         </small>
 
 

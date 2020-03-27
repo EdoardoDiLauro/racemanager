@@ -40,6 +40,33 @@
                     {% endif %}
                 </div>
              <div class="form-group">
+                 {{ form.inizio.label(class="form-control-label") }}
+                 {% if form.inizio.errors %}
+                    {{ form.inizio(class="form-control form-control-lg is-invalid") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.inizio.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                     </div>
+                 {% else %}
+                            {{ form.inizio(class="form-control form-control-lg") }}
+
+                 {% endif %}
+             </div>
+             <div class="form-group">
+                 {{ form.fine.label(class="form-control-label") }}
+                 {% if form.fine.errors %}
+                    {{ form.fine(class="form-control form-control-lg is-invalid") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.fine.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                     </div>
+                 {% else %}
+                            {{ form.fine(class="form-control form-control-lg") }}
+                 {% endif %}
+             </div>
+             <div class="form-group">
                     {{ form.picture.label() }}
                     {{ form.picture(class="form-control-file") }}
                     {% if form.picture.errors %}

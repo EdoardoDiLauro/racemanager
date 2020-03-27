@@ -9,7 +9,7 @@ from blog.config import Config
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
-login_manager.login_view = 'users.login'
+login_manager.login_view = 'races.login'
 login_manager.login_message_category = 'info'
 mail = Mail()
 
@@ -24,18 +24,20 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     mail.init_app(app)
 
-    from blog.users.routes import users
-    from blog.travels.routes import travels
-    from blog.posts.routes import posts
+    from blog.races.routes import races
     from blog.main.routes import main
+    from blog.activities.routes import activities
+    from blog.groups.routes import groups
+
+
     #from blog.errors.handlers import errors
 
     db.create_all(app=app)
 
-    app.register_blueprint(users)
-    app.register_blueprint(posts)
-    app.register_blueprint(travels)
+    app.register_blueprint(races)
     app.register_blueprint(main)
+    app.register_blueprint(activities)
+    app.register_blueprint(groups)
     #app.register_blueprint(errors)
 
 

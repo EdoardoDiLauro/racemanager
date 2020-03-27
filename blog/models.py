@@ -5,80 +5,93 @@ from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return Race.query.get(int(user_id))
+
+links=db.Table('links',
+            db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), nullable=False),
+            db.Column('gruppo_id', db.Integer, db.ForeignKey('gruppo.id'), nullable=False)
+)
+
+linksgm=db.Table('linksgm',
+            db.Column('marshal_id', db.Integer, db.ForeignKey('marshal.id'), nullable=False),
+            db.Column('gruppo_id', db.Integer, db.ForeignKey('gruppo.id'), nullable=False)
+)
 
 
-class User(db.Model, UserMixin):
+
+
+class Race(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    idCard = db.Column(db.String(9), unique=True, nullable=False)
-    travels = db.relationship('Travel', backref='creator', lazy=True)
-    bookings = db.relationship('Booking', backref='customer', lazy=True)
-    posts = db.relationship('Post', backref='author', lazy=True)
-    comments = db.relationship('Comment', backref='commenter', lazy=True)
-
-
+    inizio = db.Column(db.DateTime, nullable=False)
+    fine = db.Column(db.DateTime, nullable=False)
+    turni = db.relationship('Activity', backref='gara', lazy=True)
+    gruppi = db.relationship('Gruppo', backref='gara', lazy=True)
 
 
     def __repr__(self):
-        return "User('{self.username}', '{self.email}', '{self.image_file}')"
+        return "Race('{self.username}', '{self.email}')"
 
-class Travel(db.Model):
+class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    destination = db.Column(db.String(100), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    image_file = db.Column(db.String(20))
-    budget = db.Column(db.String(100), nullable=False)
-    available = db.Column(db.Integer, nullable=False)
-    participants = db.Column(db.Integer, nullable=False)
-    duration = db.Column(db.String(2), nullable=False)
-    description = db.Column(db.String(200), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    posts = db.relationship('Post', backref='trip', lazy=True)
-    bookings = db.relationship('Booking', backref='trip', lazy=True)
+    tipo = db.Column(db.String(30), nullable=False)
+    luogo = db.Column(db.String(100), nullable=False)
+    partenza = db.Column(db.String(100), nullable=True)
+    vettore = db.Column(db.String(100), nullable=True)
+    struttura = db.Column(db.String(100), nullable=True)
+    inizio = db.Column(db.DateTime, nullable=False)
+    fine = db.Column(db.DateTime, nullable=False, default=inizio)
+    unita = db.Column(db.Integer, nullable=False, default=0)
+    confermati = db.Column(db.Integer, nullable=False, default=0)
+    durata = db.Column(db.Interval, nullable=False)
+    note = db.Column(db.String(200), nullable=True)
+    race_id = db.Column(db.Integer, db.ForeignKey('race.id'), nullable=False)
+    gruppi = db.relationship('Gruppo', secondary=links, backref='acts', lazy=True)
 
 
     def __repr__(self):
-        return "Travel('{self.destination}', '{self.date_posted}')"
+        return "Activity('{self.luogo}', '{self.inizio}')"
 
-class Post(db.Model):
+
+class Gruppo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    image_file = db.Column(db.String(20))
-    content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    travel_id = db.Column(db.Integer, db.ForeignKey('travel.id'))
-    comments = db.relationship('Comment', backref='topic', lazy=True)
-
+    nome = db.Column(db.String(100), nullable=False)
+    activities = db.relationship('Activity', secondary=links, backref='assegnati', lazy=True)
+    race_id = db.Column(db.Integer, db.ForeignKey('race.id'), nullable=False)
+    marshals = db.relationship('Marshal', secondary=linksgm, backref='grs', lazy=True)
+    coordinatore = db.Column(db.Integer, db.ForeignKey('marshal.id'), nullable=True)
 
 
     def __repr__(self):
-        return "Post('{self.title}', '{self.date_posted}')"
+        return "Gruppo ('{self.id}')"
 
 
-class Booking(db.Model):
+class Marshal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    travel_id = db.Column(db.Integer, db.ForeignKey('travel.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    date_booked = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    licenza = db.Column(db.Integer, nullable=False)
+    acrilascio = db.Column(db.String(100), nullable=False)
+    acrinnovo = db.Column(db.String(100), nullable=False)
+    anno = db.Column(db.Integer, nullable=False)
+    qualifica = db.Column(db.String(30), nullable=False)
+    cognome = db.Column(db.String(100), nullable=False)
+    nome = db.Column(db.String(100), nullable=False)
+    datanascita = db.Column(db.String(100), nullable=False)
+    luogonascita = db.Column(db.String(100))
+    email = db.Column(db.String(120))
+    flaltraq = db.Column(db.Integer, nullable=False, default=0)
+    gruppi = db.relationship('Gruppo', secondary=linksgm, backref='componenti', lazy=True)
 
     def __repr__(self):
-        return "Booking('{self.id}', '{self.date_booked}')"
+        return "Marshal('{self.id}', '{self.nome}', '{self.cognome}')"
 
 
-class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    date_commented = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    content = db.Column(db.Text, nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
-    def __repr__(self):
-        return "Comment('{self.id}', '{self.date_commented}')"
+
+
+
 
 
 
