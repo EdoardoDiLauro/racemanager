@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{legend}}</legend>
+            <div class="form-group">
+                {{ form.nome.label(class="form-control-label") }}
+                {% if form.nome.errors %}
+                    {{ form.nome(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.nome.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.nome(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <table class="table table-hover table-responsive">
+      <thead>
+        <tr>
+            <th scope="col">Selezionato</th>
+          <th scope="col">Licenza</th>
+          <th scope="col">Nome</th>
+          <th scope="col">Cognome</th>
+            <th scope="col">Qualifica</th>
+            <th scope="col">AC</th>
+        </tr>
+      </thead>
+        {% for marshal in form.teammembers %}
+                {% if marshal.busy.data == 1%}
+        <tr class="table-danger">
+            <th scope="row">
+            {% for subfield in marshal.selezione %}
+                {{ subfield }}
+                {{ subfield.label }}
+            {% endfor %}
+            </th>
+            <th scope="row">{{marshal.licenza(readonly=True)}}</th>
+            <th scope="row">{{marshal.nome(readonly=True)}}</th>
+            <th scope="row">{{marshal.cognome(readonly=True)}}</th>
+            <th scope="row">{{marshal.qualifica(readonly=True)}}</th>
+            <th scope="row">{{marshal.ac(readonly=True)}}</th>
+        </tr>
+                {% else %}
+        <tr href="#">
+            <th scope="row">
+            {% for subfield in marshal.selezione %}
+                {{ subfield }}
+                {{ subfield.label }}
+            {% endfor %}
+            </th>
+            <th scope="row">{{marshal.licenza(readonly=True)}}</th>
+            <th scope="row">{{marshal.nome(readonly=True)}}</th>
+            <th scope="row">{{marshal.cognome(readonly=True)}}</th>
+            <th scope="row">{{marshal.qualifica(readonly=True)}}</th>
+            <th scope="row">{{marshal.ac(readonly=True)}}</th>
+        </tr>
+                {% endif %}
+        {% endfor %}
+    </table>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+        <div class="form-group">
+            {{ form.submitall(class="btn btn-outline-info") }}
+        </div>
+         <div class="form-group">
+            {{ form.submitallv(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}
+{% block feed %}
+<div class="content-section">
+    <ul class="nav flex-column nav-pills nav-fill">
+  <li class="nav-item">
+    <a class="nav-link" href="#">Riepilogo Gruppo</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Aggiunta Personale</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Spostamento Personale</a>
+  </li>
+    </ul>
+</div>
+<div class="content-section">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ filterform.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{filterlegend}}</legend>
+            <div class="form-group">
+                {{ filterform.licenzaf.label(class="form-control-label") }}
+                {% if filterform.licenzaf.errors %}
+                    {{ filterform.licenzaf(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in filterform.licenzaf.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ filterform.licenzaf(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ filterform.acf.label(class="form-control-label") }}
+                {% if filterform.acf.errors %}
+                    {{ filterform.acf(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in filterform.acf.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ filterform.acf(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ filterform.qualificaf.label(class="form-control-label") }}
+                {% if filterform.qualificaf.errors %}
+                    {{ filterform.qualificaf(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in filterform.qualificaf.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ filterform.qualificaf(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ filterform.nomef.label(class="form-control-label") }}
+                {% if filterform.nomef.errors %}
+                    {{ filterform.nomef(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in filterform.nomef.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ filterform.nomef(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ filterform.cognomef.label(class="form-control-label") }}
+                {% if filterform.cognomef.errors %}
+                    {{ filterform.cognomef(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in filterform.cognomef.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ filterform.cognomef(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            </fieldset>
+        <div class="form-group">
+            {{ filterform.submitf(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock feed%}

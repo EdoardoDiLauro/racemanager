@@ -55,12 +55,12 @@ def create_transport():
 
 @activities.route("/activity/overview", methods=['GET', 'POST'])
 @login_required
-def panoramica():
+def overview():
     stagelist = Activity.query.filter_by(race_id=current_user.id, tipo="stage")
     transportlist = Activity.query.filter_by(race_id=current_user.id, tipo="transport")
     staylist = Activity.query.filter_by(race_id=current_user.id, tipo="stay")
 
-    return render_template('panoramica.html', stagelist=stagelist, transportlist=transportlist, staylist=staylist)
+    return render_template('activity_overview.html', stagelist=stagelist, transportlist=transportlist, staylist=staylist)
 
 @activities.route("/activity/stage/<int:activity_id>/groups", methods=['GET', 'POST'])
 @login_required
