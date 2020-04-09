@@ -22,6 +22,7 @@
       <thead>
         <tr>
             <th scope="col">Selezionato</th>
+            <th scope="col">Gruppo</th>
           <th scope="col">Licenza</th>
           <th scope="col">Nome</th>
           <th scope="col">Cognome</th>
@@ -31,14 +32,17 @@
       </thead>
         {% for marshal in form.teammembers %}
                 {% if marshal.busy.data == 1%}
-        <tr class="table-danger">
+        <tr class="table-active">
             <th scope="row">
             {% for subfield in marshal.selezione %}
-                {{ subfield }}
+                {% if loop.index == 1 %}
                 {{ subfield.label }}
+                {{ subfield }}
+                {% endif %}
             {% endfor %}
             </th>
-            <th scope="row">{{marshal.licenza(readonly=True)}}</th>
+            <th scope="row">{{marshal.gruppo(readonly=True)}}</th>
+            <th scope="row">{{marshal.mid}}{{marshal.licenza(readonly=True)}}</th>
             <th scope="row">{{marshal.nome(readonly=True)}}</th>
             <th scope="row">{{marshal.cognome(readonly=True)}}</th>
             <th scope="row">{{marshal.qualifica(readonly=True)}}</th>
@@ -48,11 +52,13 @@
         <tr href="#">
             <th scope="row">
             {% for subfield in marshal.selezione %}
-                {{ subfield }}
+                {% if loop.index == 1 %}
                 {{ subfield.label }}
+                {{ subfield }}
+                {% endif %}
             {% endfor %}
             </th>
-            <th scope="row">{{marshal.licenza(readonly=True)}}</th>
+            <th scope="row">{{marshal.mid}}{{marshal.licenza(readonly=True)}}</th>
             <th scope="row">{{marshal.nome(readonly=True)}}</th>
             <th scope="row">{{marshal.cognome(readonly=True)}}</th>
             <th scope="row">{{marshal.qualifica(readonly=True)}}</th>
@@ -84,7 +90,7 @@
     <a class="nav-link active" href="#">Aggiunta Personale</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Spostamento Personale</a>
+    <a class="nav-link" href="{{ url_for('groups.alter_group', group_id=group_id) }}">Spostamento Personale</a>
   </li>
     </ul>
 </div>

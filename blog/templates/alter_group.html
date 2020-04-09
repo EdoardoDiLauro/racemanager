@@ -21,66 +21,49 @@
             <table class="table table-hover table-responsive">
       <thead>
         <tr>
-            <th scope="col">Selezionato</th>
-            <th scope="col">Gruppo</th>
-          <th scope="col">Licenza</th>
-          <th scope="col">Nome</th>
-          <th scope="col">Cognome</th>
+            <th scope="col">Spostamento</th>
+            <th scope="col">Mod. Qualifica</th>
+            <th scope="col">Licenza</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Cognome</th>
             <th scope="col">Qualifica</th>
             <th scope="col">AC</th>
         </tr>
       </thead>
         {% for marshal in form.teammembers %}
-                {% if marshal.busy.data == 1%}
-        <tr class="table-active">
-            <th scope="row">
-            {% for subfield in marshal.selezione %}
-                {% if loop.index == 1 %}
-                {{ subfield.label }}
-                {{ subfield }}
-                {% endif %}
-            {% endfor %}
-            </th>
-            <th scope="row">{{marshal.gruppo(readonly=True)}}</th>
-            <th scope="row">{{marshal.mid}}{{marshal.licenza(readonly=True)}}</th>
-            <th scope="row">{{marshal.nome(readonly=True)}}</th>
-            <th scope="row">{{marshal.cognome(readonly=True)}}</th>
-            <th scope="row">{{marshal.qualifica(readonly=True)}}</th>
-            <th scope="row">{{marshal.ac(readonly=True)}}</th>
-        </tr>
-                {% else %}
+
         <tr href="#">
-            <th scope="row">
-            {% for subfield in marshal.selezione %}
-                {% if loop.index == 1 %}
-                {{ subfield.label }}
-                {{ subfield }}
-                {% endif %}
-            {% endfor %}
-            </th>
+            <th scope="row">{{marshal.changeg}}</th>
+            <th scope="row">{{marshal.changeq}}</th>
             <th scope="row">{{marshal.mid}}{{marshal.licenza(readonly=True)}}</th>
             <th scope="row">{{marshal.nome(readonly=True)}}</th>
             <th scope="row">{{marshal.cognome(readonly=True)}}</th>
             <th scope="row">{{marshal.qualifica(readonly=True)}}</th>
             <th scope="row">{{marshal.ac(readonly=True)}}</th>
         </tr>
-                {% endif %}
         {% endfor %}
     </table>
         </fieldset>
         <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info") }}
-        </div>
-        <div class="form-group">
-            {{ form.submitall(class="btn btn-outline-info") }}
-        </div>
-         <div class="form-group">
-            {{ form.submitallv(class="btn btn-outline-info") }}
+            {{ form.submitmod(class="btn btn-outline-info") }}
         </div>
     </form>
 </div>
 {% endblock content %}
 {% block feed %}
+<div class="content-section">
+    <ul class="nav flex-column nav-pills nav-fill">
+  <li class="nav-item">
+    <a class="nav-link" href="#">Riepilogo Gruppo</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link " href="{{ url_for('groups.update_group', group_id=group_id) }}">Aggiunta Personale</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Spostamento Personale</a>
+  </li>
+    </ul>
+</div>
 <div class="content-section">
     <form method="POST" action="" enctype="multipart/form-data">
         {{ filterform.hidden_tag() }}

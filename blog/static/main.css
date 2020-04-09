@@ -33,7 +33,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .article-title {
-  color: #444444;
+  color: #003063;
 }
 
 a.article-title:hover {
@@ -58,7 +58,7 @@ a.article-title:hover {
 }
 
 .article-metadata a:hover {
-  color: #333;
+  color: #ffffff;
   text-decoration: none;
 }
 
@@ -78,3 +78,55 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+
+.nav-link {
+  color: #003063;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #003063
+}
+
+.nav-pills .nav-link:hover, .nav-pills .show > .nav-link {
+    border: #003063;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #003063;
+    border-color: #003063
+}
+
+.btn-secondary:hover {
+    color: #fff;
+    background-color: #00225d;
+    border-color: #00225d
+}
+
+.btn-outline-info {
+    color: #003063;
+    border-color: #003063
+}
+
+.btn-outline-info:hover {
+    color: #ffffff;
+    border-color: #003063;
+    background-color: #003063
+
+}
+
+.btn-outline-info a:hover {
+    color: #ffffff;
+    border-color: #003063
+}
+
+.table-active, .table-active > td, .table-active > th {
+    background-color: rgba(66, 109, 155, 0.71)
+}
+
+.table-hover .table-active:hover {
+    background-color: rgba(66, 109, 155, 0.9)
+}
+
+

@@ -63,6 +63,10 @@ class Gruppo(db.Model):
     race_id = db.Column(db.Integer, db.ForeignKey('race.id'), nullable=False)
     marshals = db.relationship('Marshal', secondary=linksgm, backref='grs', lazy=True)
     coordinatore = db.Column(db.Integer, db.ForeignKey('marshal.id'), nullable=True)
+    cp=db.Column(db.Integer, default=0)
+    cpp=db.Column(db.Integer, default=0)
+    cpq=db.Column(db.Integer, default=0)
+
 
 
     def __repr__(self):
