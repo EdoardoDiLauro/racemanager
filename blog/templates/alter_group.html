@@ -54,7 +54,7 @@
 <div class="content-section">
     <ul class="nav flex-column nav-pills nav-fill">
   <li class="nav-item">
-    <a class="nav-link" href="#">Riepilogo Gruppo</a>
+    <a class="nav-link" href="{{ url_for('groups.group', group_id=group_id) }}">Riepilogo Gruppo</a>
   </li>
   <li class="nav-item">
     <a class="nav-link " href="{{ url_for('groups.update_group', group_id=group_id) }}">Aggiunta Personale</a>

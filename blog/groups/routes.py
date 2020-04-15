@@ -6,7 +6,7 @@ from sqlalchemy import func
 
 from blog import db
 from blog.models import Race, Marshal,Activity, Gruppo
-from blog.groups.forms import GroupForm, AddMarshalForm, FilterForm
+from blog.groups.forms import GroupForm, AddMarshalForm, FilterForm, AddActivityForm
 
 groups = Blueprint('groups', __name__)
 
@@ -159,6 +159,12 @@ def new_group():
 @login_required
 def overview():
     groups = Gruppo.query.filter_by(race_id=current_user.id).all()
+
+    for gr in groups:
+        gr.cp= Marshal.query.filter_by(qualifica="CP").filter(Marshal.gruppi.any(id=gr.id)).count()
+        gr.cpp= Marshal.query.filter_by(qualifica="CPP").filter(Marshal.gruppi.any(id=gr.id)).count()
+        gr.cpq= Marshal.query.filter_by(qualifica="CPQ").filter(Marshal.gruppi.any(id=gr.id)).count()
+
     return render_template('group_overview.html', title ='Panoramica Gruppi', groups=groups)
 
 @groups.route("/group/<int:group_id>/delete", methods=['GET','POST'])
@@ -179,8 +185,49 @@ def delete_group(group_id):
 @login_required
 def group(group_id):
     group = Gruppo.query.get_or_404(group_id)
+    if group.race_id != current_user.id:
+        abort(403)
 
 
+    return render_template('group.html', title=group.nome , group=group)
+
+@groups.route("/group/<int:group_id>/addtask", methods=['GET', 'POST'])
+@login_required
+def add_task(group_id):
+    group = Gruppo.query.get_or_404(group_id)
+    if group.race_id != current_user.id:
+        abort(403)
+
+    previous= request.values.get('previous')
+    following= request.values.get('following')
+
+
+    form = AddActivityForm()
+    form.stage.choices= [(item.id, item.luogo) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="stage", ~Activity.gruppi.any(id=group_id))]
+    form.stay.choices= [(item.id, item.struttura) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="stay", ~Activity.gruppi.any(id=group_id))]
+    form.travel.choices= [(item.id, item.partenza) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="travel", ~Activity.gruppi.any(id=group_id))]
+
+    if form.submit.data and form.validate_on_submit():
+        if form.stage.data:
+            stage = Activity.query.get_or_404(form.stage.data)
+            group.activities.append(stage)
+            db.session.commit()
+
+        flash('Impiego inserito con successo', 'success')
+        return render_template('group.html', title=group.nome, group=group)
+
+    return render_template('addtask.html', title= "Assegnazione Impiego" , group=group, form=form, legend="Assegnazione Incarico")
+
+@groups.route("/group/<int:group_id>/remove/<int:activity_id>", methods=['GET', 'POST'])
+@login_required
+def remove_task(group_id, activity_id):
+    group = Gruppo.query.get_or_404(group_id)
+    if group.race_id != current_user.id:
+        abort(403)
+    activity= Activity.query.get_or_404(activity_id)
+    group.activities.remove(activity)
+    db.session.commit()
+    flash('Impiego rimosso con successo', 'success')
     return render_template('group.html', title=group.nome , group=group)
 
 @groups.route("/group/<int:group_id>/update", methods=['GET', 'POST'])

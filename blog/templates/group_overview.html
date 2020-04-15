@@ -5,8 +5,8 @@
      <article class="media content-section">
           <div class="media-body">
          <div class="article-metadata">
-              <h3><a class="mr-2">{{ group.nome }} | Totale:   CP: CPP: CPQ: </a></h3>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('groups.update_group', group_id=group.id) }}">Modifica</a>
+              <h3><a class="mr-2" >{{ group.nome }} | Totale: {{group.cp+group.cpp+group.cpq}} | CP: {{group.cp}} CPP: {{group.cpp}} CPQ: {{group.cpq}} </a></h3>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('groups.group', group_id=group.id) }}">Modifica</a>
               <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.delete_group', group_id=group.id) }}">Elimina</a>
          </div>
          <table class="table table-hover table-responsive" align="center">

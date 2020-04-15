@@ -1,31 +1,36 @@
 {% extends "layout.html" %}
 {% block content %}
     <h2>Impieghi</h2>
-    <table class="table table-hover table-responsive-sm">
+{% for stage in stagelist %}
+     <article class="media content-section">
+          <div class="media-body">
+         <div class="article-metadata">
+             <h3><a class="mr-2">{{ stage.luogo }} </a></h3>
+             <h4><a>Inizio: {{stage.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Fine: {{stage.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
+              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('activities.delete_activity', activity_id=stage.id) }}">Elimina</a>
+         </div>
+         <table class="table table-hover table-responsive" align="center">
       <thead>
         <tr>
-          <th scope="col">Impiego</th>
-          <th scope="col">Inizio</th>
-          <th scope="col">Fine</th>
-          <th scope="col">Durata</th>
-          <th scope="col">Unità</th>
-          <th scope="col">Assegnati</th>
+          <th scope="col">Gruppo</th>
+          <th scope="col">Totali</th>
+            <th scope="col">CP</th>
+            <th scope="col">CPP</th>
+            <th scope="col">CPQ</th>
         </tr>
       </thead>
-        {% for activity in stagelist %}
-        <tr href="#">
-            <th scope="row">{{activity.luogo}}</th>
-            <th scope="row">{{activity.inizio}}</th>
-            <th scope="row">{{activity.fine}}</th>
-            <th scope="row">{{activity.durata}}</th>
-            <th scope="row">{{activity.unita}}</th>
-            <th scope="row">{{activity.confermati}}</th>
+        {% for group in stage.gruppi %}
+        <tr>
+            <th scope="row">{{group.nome}}</th>
+            <th scope="row">{{group.cp+group.cpp+group.cpq}} </th>
+            <th scope="row">{{group.cp}}</th>
+            <th scope="row">{{group.cpp}}</th>
+            <th scope="row">{{group.cpq}}</th>
         </tr>
         {% endfor %}
     </table>
-{% endblock content %}
-
-{% block feed %}
-    <h3>Stats</h3>
-{% endblock feed %}
-
+          </div>
+     </article>
+{% endfor %}
+{% endblock content%}

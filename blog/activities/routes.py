@@ -93,7 +93,7 @@ def stage_detail(activity_id):
 
 @activities.route("/activity/stage/<int:activity_id>/update", methods=['GET', 'POST'])
 @login_required
-def activity_update(activity_id):
+def stage_update(activity_id):
     activity = Activity.query.get_or_404(activity_id)
     if activity.race_id != current_user.id:
         abort(403)
@@ -101,14 +101,16 @@ def activity_update(activity_id):
 
     return render_template('create_stage.html', title='Modifica Attività',
                            form=form, legend='Modifica Attività')
-@activities.route("/travel/<int:travel_id>/delete", methods=['GET','POST'])
+@activities.route("/activity/<int:activity_id>/delete", methods=['GET','POST'])
 @login_required
-def delete_travel(travel_id):
-    travel = Travel.query.get_or_404(travel_id)
-    if travel.creator != current_user:
+def delete_activity(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.race_id != current_user.id:
         abort(403)
-    Booking.query.filter_by(trip=travel).delete(synchronize_session='evaluate')
-    db.session.delete(travel)
+    for group in activity.gruppi:
+        group.activities.remove(activity)
+        db.session.commit()
+    db.session.delete(activity)
     db.session.commit()
     flash('Your travel has been deleted!', 'success')
     return redirect(url_for('main.home'))
