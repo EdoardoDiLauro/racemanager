@@ -164,6 +164,7 @@ def overview():
         gr.cp= Marshal.query.filter_by(qualifica="CP").filter(Marshal.gruppi.any(id=gr.id)).count()
         gr.cpp= Marshal.query.filter_by(qualifica="CPP").filter(Marshal.gruppi.any(id=gr.id)).count()
         gr.cpq= Marshal.query.filter_by(qualifica="CPQ").filter(Marshal.gruppi.any(id=gr.id)).count()
+        db.session.commit()
 
     return render_template('group_overview.html', title ='Panoramica Gruppi', groups=groups)
 

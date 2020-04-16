@@ -9,8 +9,10 @@
 {% if loop.index>1 %}
 <article class="media content-section">
           <div class="media-body">
-             <h3><a class="mr-2">BREAK {{group.activities[loop.index-1].inizio-group.activities[loop.index-2].fine}} </a></h3>
-        <div class="card">
+              {% if group.activities[loop.index-2].tipo!='stay'%}
+             <h3><a class="mr-2">BREAK: {{group.activities[loop.index-1].inizio-group.activities[loop.index-2].fine}} </a></h3>
+              {% endif %}
+              <div class="card">
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('groups.add_task', group_id=group.id, previous=group.activities[loop.index-2].id, following=group.activities[loop.index-1].id) }}">Imposta Attività</a>
          </div>
           </div>
@@ -31,8 +33,8 @@
      <article class="media content-section">
           <div class="media-body">
          <div class="article-metadata">
-             <h3><a class="mr-2">{{ activity.partenza }} </a></h3>
-             <h4><a>Inizio: {{activity.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Fine: {{activity.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
+             <h3><a class="mr-2">{{ activity.vettore }} da {{activity.partenza }} a {{activity.luogo}} </a></h3>
+             <h4><a>Partenza: {{activity.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Arrivo: {{activity.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
               <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_task', activity_id=activity.id, group_id=group.id) }}">Rimuovi</a>
          </div>

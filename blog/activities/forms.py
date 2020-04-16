@@ -2,8 +2,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SubmitField, TextAreaField
-from wtforms.fields.html5 import DateTimeLocalField
-from wtforms.validators import DataRequired, Length
+from wtforms.fields.html5 import DateTimeLocalField, DateField
+from wtforms.validators import DataRequired, Length, Optional
 
 
 class StageForm (FlaskForm) :
@@ -22,8 +22,10 @@ class StageForm (FlaskForm) :
 class StayForm(FlaskForm):
     luogo = StringField('Struttura',
                         validators=[DataRequired()])
+    inizio = DateField('Data Pernottamento',
+                                validators=[DataRequired()], format='%Y-%m-%d')
     unita = StringField('Totale personale alloggiabile',
-                        validators=[DataRequired()])
+                        validators=[Optional()])
     note = TextAreaField('Note',
                          validators=[Length(max=200)])
     submit = SubmitField('Inserire Struttura')
@@ -36,9 +38,9 @@ class TransportForm (FlaskForm) :
     vettore = StringField('Vettore',
                         validators=[DataRequired()])
     inizio = DateTimeLocalField('Partenza',
-                       validators=[DataRequired()])
+                                validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
     fine = DateTimeLocalField('Arrivo',
-                     validators=[DataRequired()])
+                     validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
     note = TextAreaField('Note',
                          validators=[Length(max=200)])
     submit = SubmitField('Inserire Trasporto')
