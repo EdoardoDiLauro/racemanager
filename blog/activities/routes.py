@@ -21,7 +21,7 @@ def create_stage():
         db.session.add(new_activity)
         db.session.commit()
         flash('Impiego inserito con successo', 'success')
-        return redirect(url_for('overview'))
+        return redirect(url_for('activities.overview'))
     return render_template('create_stage.html', title='Inserimento Impiego', form=form, legend='Inserimento Impiego')
 
 @activities.route("/activity/stay" , methods=['GET', 'POST'])
@@ -33,12 +33,12 @@ def create_stay():
     form = StayForm()
     if form.validate_on_submit():
         if not form.unita.data: form.unita.data=999
-        inizio= datetime.combine(form.inizio.data, datetime.time(23,59,59))
-        new_activity=Activity(tipo='stay', luogo=form.luogo.data, inizio=inizio,unita=form.unita.data, note=form.note.data)
+        endofday= datetime.combine(form.inizio.data, time(23,59,59))
+        new_activity=Activity(tipo='stay', luogo=form.luogo.data,struttura=form.luogo.data, inizio=endofday,fine=endofday,unita=form.unita.data, note=form.note.data, race_id=current_user.id)
         db.session.add(new_activity)
         db.session.commit()
         flash('Struttura inserita con successo', 'success')
-        return redirect(url_for('main.home')) #overview
+        return redirect(url_for('activities.overview'))
     return render_template('create_stay.html', title='Inserimento Struttura',form=form, legend='Inserimento Struttura')
 
 @activities.route("/activity/transport" , methods=['GET', 'POST'])
@@ -49,11 +49,11 @@ def create_transport():
         return redirect(url_for('main.home'))
     form = TransportForm()
     if form.validate_on_submit():
-        new_activity=Activity(tipo='transport', partenza=form.partenza.data,luogo=form.luogo.data,vettore=form.vettore.data,inizio=form.inizio.data,fine=form.fine.data,unita=form.unita.data, note=form.note.data)
+        new_activity=Activity(tipo='transport', partenza=form.partenza.data,luogo=form.luogo.data,vettore=form.vettore.data,inizio=form.inizio.data,fine=form.fine.data,unita=form.unita.data, note=form.note.data, race_id=current_user.id)
         db.session.add(new_activity)
         db.session.commit()
         flash('Trasporto inserito con successo', 'success')
-        return redirect(url_for('main.home')) #overview
+        return redirect(url_for('activities.overview'))
     return render_template('create_transport.html', title='Inserimento Trasporto',form=form, legend='Inserimento Trasporto')
 
 @activities.route("/activity/overview", methods=['GET', 'POST'])

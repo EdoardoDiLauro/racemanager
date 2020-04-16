@@ -189,8 +189,9 @@ def group(group_id):
     if group.race_id != current_user.id:
         abort(403)
 
+    activities=Activity.query.filter(Activity.gruppi.any(id=group_id)).order_by(Activity.inizio)
 
-    return render_template('group.html', title=group.nome , group=group)
+    return render_template('group.html', title=group.nome , group=group, activities=activities)
 
 @groups.route("/group/<int:group_id>/addtask", methods=['GET', 'POST'])
 @login_required
@@ -204,18 +205,26 @@ def add_task(group_id):
 
 
     form = AddActivityForm()
-    form.stage.choices= [(item.id, item.luogo) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="stage", ~Activity.gruppi.any(id=group_id))]
-    form.stay.choices= [(item.id, item.struttura) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="stay", ~Activity.gruppi.any(id=group_id))]
-    form.travel.choices= [(item.id, item.partenza) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="travel", ~Activity.gruppi.any(id=group_id))]
+    form.stage.choices= [(-1," ")]+[(item.id, item.luogo) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="stage", ~Activity.gruppi.any(id=group_id))]
+    form.stay.choices= [(-1," ")]+[(item.id, item.struttura) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="stay", ~Activity.gruppi.any(id=group_id))]
+    form.transport.choices= [(-1," ")]+[(item.id, item.partenza) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="travel", ~Activity.gruppi.any(id=group_id))]
 
     if form.submit.data and form.validate_on_submit():
-        if form.stage.data:
+        if form.stage.data!=-1:
             stage = Activity.query.get_or_404(form.stage.data)
             group.activities.append(stage)
             db.session.commit()
+        elif form.stay.data!=-1:
+            stay = Activity.query.get_or_404(form.stay.data)
+            group.activities.append(stay)
+            db.session.commit()
+        elif form.transport.data!=-1:
+            transport = Activity.query.get_or_404(form.transport.data)
+            group.activities.append(transport)
+            db.session.commit()
 
         flash('Impiego inserito con successo', 'success')
-        return render_template('group.html', title=group.nome, group=group)
+        return redirect(url_for('groups.group', group_id=group.id))
 
     return render_template('addtask.html', title= "Assegnazione Impiego" , group=group, form=form, legend="Assegnazione Incarico")
 
@@ -229,7 +238,7 @@ def remove_task(group_id, activity_id):
     group.activities.remove(activity)
     db.session.commit()
     flash('Impiego rimosso con successo', 'success')
-    return render_template('group.html', title=group.nome , group=group)
+    return redirect(url_for('groups.group', group_id=group.id))
 
 @groups.route("/group/<int:group_id>/update", methods=['GET', 'POST'])
 @login_required
@@ -301,13 +310,15 @@ def update_group(group_id):
         marshal_form.cognome = marshal.cognome
         marshal_form.ac = marshal.acrinnovo
         marshal_form.qualifica = marshal.qualifica
-        m = Marshal.query.filter_by(id=marshal.id).first()
-        for g in m.gruppi:
-            gr = Gruppo.query.filter_by(id=g.id).first()
-            if gr.race_id == current_user.id:
-                marshal_form.gruppo = gr.nome
-                marshal_form.busy = 1
-                marshal_form.selezione = 0
+        ids = Marshal.query.filter_by(licenza=marshal.licenza)
+        for identity in ids:
+            m = Marshal.query.filter_by(id=identity.id).first()
+            for g in m.gruppi:
+                gr = Gruppo.query.filter_by(id=g.id).first()
+                if gr.race_id == current_user.id:
+                    marshal_form.gruppo = gr.nome
+                    marshal_form.busy = 1
+                    marshal_form.selezione = 0
         teamform.teammembers.append_entry(marshal_form)
 
     if filterform.submitf.data and filterform.validate_on_submit():
@@ -320,7 +331,7 @@ def update_group(group_id):
         elif filterform.acf.data != "all":
             if filterform.qualificaf.data != "all":
                 return redirect(
-                    url_for('groups.update_group', ac=filterform.acf.data, qualifica=filterform.qualificaf.data))
+                    url_for('groups.update_group', ac=filterform.acf.data, qualifica=filterform.qualificaf.data,group_id=group_id))
             return redirect(url_for('groups.update_group',group_id=group_id, ac=filterform.acf.data))
         elif filterform.qualificaf.data != "all":
             return redirect(url_for('groups.update_group',group_id=group_id, qualifica=filterform.qualificaf.data))
@@ -374,7 +385,7 @@ def update_group(group_id):
         flash('Gruppo modificato con successo', 'success')
         return redirect(url_for('groups.update_group', group_id=group_id, groupwip=teamform.nome.data))
 
-    return render_template('update_group.html', title="Modifica Gruppo", group_id=group_id, form=teamform, legend='Modifica Gruppo - Aggiunta Personale', filterform=filterform, filterlegend='Filtro')
+    return render_template('update_group.html', title="Modifica Gruppo", group=group, group_id=group_id, form=teamform, legend='Aggiunta Personale', filterform=filterform, filterlegend='Filtro')
 
 
 
@@ -385,6 +396,8 @@ def alter_group(group_id):
     group = Gruppo.query.get_or_404(group_id)
     if group.race_id != current_user.id:
         abort(403)
+
+    coordinatore=Marshal.query.get_or_404(group.coordinatore)
 
     teamform = GroupForm()
     filterform = FilterForm()
@@ -427,7 +440,7 @@ def alter_group(group_id):
     if groupwip:
         teamform.nome.data = groupwip
 
-    othergroups=  [(0, "Mantieni") , (-1, "Rimuovi")]+[ (int(item.id), str(item.nome)) for item in db.session.query(Gruppo).filter(Gruppo.race_id==current_user.id, ~Gruppo.id.__eq__(group_id)) ]
+    othergroups=  [(0, "Mantieni") , (-1, "Rimuovi"), (-2, "Coordinatore")]+[ (int(item.id), str(item.nome)) for item in db.session.query(Gruppo).filter(Gruppo.race_id==current_user.id, ~Gruppo.id.__eq__(group_id)) ]
 
     for marshal in ps:  # some database function to get a list of team members
         marshal_form = AddMarshalForm()
@@ -486,6 +499,10 @@ def alter_group(group_id):
                 m = Marshal.query.filter_by(id=data.mid.data).first()
                 m.gruppi.remove(group)
                 db.session.commit()
+            elif data.changeg.data == -2:
+                m = Marshal.query.filter_by(id=data.mid.data).first()
+                group.coordinatore=m.id
+                db.session.commit()
             elif data.changeg.data != 0:
                 m = Marshal.query.filter_by(id=data.mid.data).first()
                 m.gruppi.remove(group)
@@ -504,4 +521,4 @@ def alter_group(group_id):
         flash('Gruppo modificato con successo', 'success')
         return redirect(url_for('groups.alter_group', group_id=group_id, groupwip=teamform.nome.data))
 
-    return render_template('alter_group.html', title="Modifica Gruppo", group_id=group_id, form=teamform, legend='Modifica Gruppo - Spostamento Personale', filterform=filterform, filterlegend='Filtro')
+    return render_template('alter_group.html', title="Modifica Gruppo", group=group,coordinatore=coordinatore, group_id=group_id, form=teamform, legend='Spostamento Personale', filterform=filterform, filterlegend='Filtro')

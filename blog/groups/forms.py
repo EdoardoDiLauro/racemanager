@@ -30,7 +30,7 @@ class GroupForm(Form):
 class AddActivityForm(FlaskForm):
     stage = SelectField(u'Impiego', coerce=int, validators=[Optional()])
     stay = SelectField(u'Alloggio', coerce=int, validators=[Optional()])
-    travel = SelectField(u'Trasporto', coerce=int, validators=[Optional()])
+    transport = SelectField(u'Trasporto', coerce=int, validators=[Optional()])
     submit = SubmitField('Inserimento')
 
 class FilterForm(FlaskForm):

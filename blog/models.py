@@ -46,7 +46,7 @@ class Activity(db.Model):
     fine = db.Column(db.DateTime, nullable=False, default=inizio)
     unita = db.Column(db.Integer, nullable=False, default=0)
     confermati = db.Column(db.Integer, nullable=False, default=0)
-    durata = db.Column(db.Interval, nullable=False)
+    durata = db.Column(db.Interval, nullable=True)
     note = db.Column(db.String(200), nullable=True)
     race_id = db.Column(db.Integer, db.ForeignKey('race.id'), nullable=False)
     gruppi = db.relationship('Gruppo', secondary=links, backref='acts', lazy=True)

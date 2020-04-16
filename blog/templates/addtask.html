@@ -4,7 +4,7 @@
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">{{legend}}</legend>
+            <legend class="border-bottom mb-4">{{group.nome}} - {{legend}}</legend>
             <div class="form-group">
                 {{ form.stage.label(class="form-control-label") }}
                 {% if form.stage.errors %}
@@ -32,16 +32,16 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                {{ form.travel.label(class="form-control-label") }}
-                {% if form.travel.errors %}
-                    {{ form.travel(class="form-control form-control-lg is-invalid") }}
+                {{ form.transport.label(class="form-control-label") }}
+                {% if form.transport.errors %}
+                    {{ form.transport(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.travel.errors %}
+                        {% for error in form.transport.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.travel(class="form-control form-control-lg") }}
+                    {{ form.transport(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
         </fieldset>
@@ -52,5 +52,17 @@
 </div>
 {% endblock content %}
 {% block feed %}
-
+<div class="content-section">
+    <ul class="nav flex-column nav-pills nav-fill">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('groups.group', group_id=group_id) }}">Riepilogo Attività</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('groups.update_group', group_id=group.id) }}">Aggiunta Personale</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('groups.alter_group', group_id=group.id) }}">Gestione Personale</a>
+  </li>
+    </ul>
+</div>
 {% endblock feed %}

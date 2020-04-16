@@ -31,15 +31,15 @@ class StayForm(FlaskForm):
     submit = SubmitField('Inserire Struttura')
 
 class TransportForm (FlaskForm) :
-    partenza = StringField('Località di Partenza',
+    partenza = StringField('Partenza',
                         validators=[DataRequired()])
-    luogo = StringField('Località di Arrivo',
+    luogo = StringField('Arrivo',
                         validators=[DataRequired()])
     vettore = StringField('Vettore',
                         validators=[DataRequired()])
-    inizio = DateTimeLocalField('Partenza',
+    inizio = DateTimeLocalField('Orario di Partenza',
                                 validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
-    fine = DateTimeLocalField('Arrivo',
+    fine = DateTimeLocalField('Orario di Arrivo',
                      validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
     note = TextAreaField('Note',
                          validators=[Length(max=200)])

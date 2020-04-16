@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h2>Riepilogo Attività {{group.nome}}</h2>
+    <h2>{{group.nome}} - Riepilogo Attività</h2>
 
     <div class="card">
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('groups.add_task', group_id=group.id) }}">Imposta Attività</a>
      </div>
-{% for activity in group.activities %}
+{% for activity in activities %}
 {% if loop.index>1 %}
 <article class="media content-section">
           <div class="media-body">
@@ -32,24 +32,21 @@
 {% elif activity.tipo=='travel'%}
      <article class="media content-section">
           <div class="media-body">
-         <div class="article-metadata">
              <h3><a class="mr-2">{{ activity.vettore }} da {{activity.partenza }} a {{activity.luogo}} </a></h3>
              <h4><a>Partenza: {{activity.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Arrivo: {{activity.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
-              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_task', activity_id=activity.id, group_id=group.id) }}">Rimuovi</a>
-         </div>
-
+            <div class="card">
+                 <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_task', activity_id=activity.id, group_id=group.id) }}">Rimuovi</a>
+             </div>
           </div>
      </article>
 {% elif activity.tipo=='stay'%}
      <article class="media content-section">
           <div class="media-body">
-         <div class="article-metadata">
              <h3><a class="mr-2">{{ activity.struttura }} </a></h3>
-             <h4><a>Pernottamento: {{activity.inizio.strftime(format='%Y-%m-%d')}}}} </a></h4>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
-              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_task', activity_id=activity.id, group_id=group.id) }}">Rimuovi</a>
-         </div>
+             <h4><a>Pernottamento: {{activity.inizio.strftime(format='%Y-%m-%d')}} </a></h4>
+            <div class="card">
+                 <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_task', activity_id=activity.id, group_id=group.id) }}">Rimuovi</a>
+             </div>
 
           </div>
      </article>
@@ -60,6 +57,27 @@
      </div>
 
 {% endblock content%}
-
+{% block feed %}
+<div class="content-section">
+    <ul class="nav flex-column nav-pills nav-fill">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Riepilogo Attività</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('groups.update_group', group_id=group.id) }}">Aggiunta Personale</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('groups.alter_group', group_id=group.id) }}">Gestione Personale</a>
+  </li>
+    </ul>
+</div>
+<div class="content-section">
+    <legend class="border-bottom mb-4">Informazioni Personale</legend>
+    <h3>Totale: {{group.cp+group.cpp+group.cpq}}</h3>
+    <h3>CP: {{group.cp}}</h3>
+    <h3>CPP: {{group.cpp}}</h3>
+    <h3>CPQ: {{group.cpq}}</h3>
+</div>
+{% endblock feed %}
 
 
