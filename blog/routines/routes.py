@@ -51,7 +51,7 @@ def delete_routine(routine_id):
     db.session.delete(routine)
     db.session.commit()
     flash('Elemento rimosso con successo', 'success')
-    return redirect(url_for('main.home'))
+    return redirect(url_for('routines.overview'))
 
 @routines.route("/routine/<int:routine_id>", methods=['GET','POST'])
 @login_required

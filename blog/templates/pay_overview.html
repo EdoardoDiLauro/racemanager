@@ -1,23 +1,45 @@
 {% extends "layout.html" %}
 {% block content %}
     <h2>Pagamenti</h2>
- <table class="table table-hover table-responsive" align="center">
+{% for pay in paylist %}
+<article class="media content-section">
+          <div class="media-body">
+         <div class="article-metadata">
+             <h3><a class="mr-2">{{ pay.causale }} </a></h3>
+             <h4><a>Data: {{pay.inizio.strftime(format='%Y-%m-%d')}} </a></h4>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('payments.update_payment', payment_id=pay.id) }}">Modifica</a>
+              <a class="btn btn-danger btn-sm m-1"  href="{{ url_for('payments.delete_payment', payment_id=pay.id) }}">Elimina</a>
+         </div>
+              <a class="btn btn-outline-info btn-sm m-1" href="{{ url_for('payments.uploaded_file', filename=pay.image_file) }}">Visualizza File: {{pay.image_file}}</a>
+              <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('payments.download_file', filename=pay.image_file, payment_id=pay.causale) }}">Download</a>
+         <table class="table table-hover table-responsive-lg" align="center">
       <thead>
         <tr>
-          <th scope="col">Causale</th>
-          <th scope="col">Tipo</th>
-          <th scope="col">Data</th>
-            <th scope="col">File</th>
-            <th scope="col">DL</th>
+          <th scope="col">Gruppo</th>
+          <th scope="col">Totali</th>
+            <th scope="col">CP</th>
+            <th scope="col">CPP</th>
+            <th scope="col">CPQ</th>
         </tr>
       </thead>
-{% for pay in paylist %}        <tr>
-            <th scope="row">{{pay.causale}}</th>
-            <th scope="row">{{pay.tipo}}</th>
-            <th scope="row">{{pay.inizio}}</th>
-            <th scope="row"><a class="btn btn-danger btn-sm m-1" href="{{ url_for('payments.uploaded_file', filename=pay.image_file) }}">{{pay.image_file}}</a></th>
-             <th scope="row"><a class="btn btn-sm m-1" href="{{ url_for('payments.download_file', filename=pay.image_file, payment_id=pay.causale) }}">{{pay.image_file}}</a></th>
- </tr>
+        {% for group in pay.gruppi %}
+        <tr>
+            <th scope="row">{{group.nome}}</th>
+            <th scope="row">{{group.cp+group.cpp+group.cpq}} </th>
+            <th scope="row">{{group.cp}}</th>
+            <th scope="row">{{group.cpp}}</th>
+            <th scope="row">{{group.cpq}}</th>
+        </tr>
         {% endfor %}
     </table>
+          </div>
+     </article>
+        {% endfor %}
+{% if paylist.count()==0 %}
+<article class="media content-section">
+          <div class="media-body">
+                          <h4><a>Nessun Pagamento inserito</a></h4>
+          </div>
+</article>
+{% endif %}
 {% endblock content %}

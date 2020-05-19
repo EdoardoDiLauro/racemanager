@@ -34,10 +34,9 @@ def new_payment():
         endofday= datetime.combine(form.data.data, time(23,59,59))
         payment = Payment(causale=form.causale.data, race_id=current_user.id, tipo=form.modo.data, inizio=endofday, note=form.note.data)
         if form.doc.data and allowed_file(form.doc.data.filename):
-                filename = secure_filename(form.doc.data.filename)
+                filename = secure_filename(str(form.causale.data) + '_' + str(form.data.data))
                 form.doc.data.save(os.path.join(current_app.root_path, 'static/payment_files', filename))
                 payment.image_file = filename
-                flash('File inserito con successo', 'success')
         for data in form.teammembers.entries:
             if data.selezione.data == 1:
                 gr = Gruppo.query.get_or_404(data.gid.data)
@@ -46,11 +45,77 @@ def new_payment():
         db.session.add(payment)
         db.session.commit()
         flash('Pagamento inserito con successo', 'success')
-        return redirect(url_for('payments.new_payment'))
+        return redirect(url_for('payments.overview'))
 
     return render_template('create_pay.html', title='Inserimento Pagamento',
                                form=form, legend='Inserimento Pagamento')
 
+@payments.route("/payment/<int:payment_id>/update", methods=['GET','POST'])
+@login_required
+def update_payment(payment_id):
+    payment = Payment.query.get_or_404(payment_id)
+    if payment.race_id != current_user.id:
+        abort(403)
+
+    form = PaymentForm()
+
+    form.causale.data=payment.causale
+    form.modo.data=payment.tipo
+    form.data.data=payment.inizio.date()
+    form.note.data=payment.note
+
+    gs = Gruppo.query.filter_by(race_id=current_user.id).all()
+
+    for gr in gs:
+        gf = GroupPay()
+        gf.gid = gr.id
+        gf.nome = gr.nome
+        p = db.session.query(Gruppo.payments).first()
+        if p: gf.payed = 1
+        group =  Gruppo.query.filter_by(id=gr.id).first()
+        for pay in group.payments:
+            if pay.id==payment.id: gf.selezione = 1
+
+        form.teammembers.append_entry(gf)
+
+    if form.submit.data:
+        endofday = datetime.combine(form.data.data, time(23, 59, 59))
+        payment.causale=form.causale.data
+        payment.tipo=form.modo.data
+        payment.inizio=endofday
+        payment.note=form.note.data
+        if form.doc.data and allowed_file(form.doc.data.filename):
+            filename = secure_filename(str(form.causale.data) + '_' + str(form.data.data))
+            form.doc.data.save(os.path.join(current_app.root_path, 'static/payment_files', filename))
+            payment.image_file = filename
+        for data in form.teammembers.entries:
+            if data.selezione.data == 1:
+                gr = Gruppo.query.get_or_404(data.gid.data)
+                payment.gruppi.append(gr)
+                db.session.commit()
+        db.session.add(payment)
+        db.session.commit()
+        flash('Pagamento aggiornato con successo', 'success')
+        return redirect(url_for('payments.overview'))
+
+    return render_template('create_pay.html', title='Modifica Pagamento',
+                           form=form, legend='Modifica Pagamento')
+
+@payments.route("/payment/<int:payment_id>/delete", methods=['GET','POST'])
+@login_required
+def delete_payment(payment_id):
+    payment = Payment.query.get_or_404(payment_id)
+    if payment.race_id != current_user.id:
+        abort(403)
+
+    for gr in payment.gruppi:
+        payment.gruppi.remove(gr)
+        db.session.commit()
+
+    db.session.delete(payment)
+    db.session.commit()
+    flash('Elemento rimosso con successo', 'success')
+    return redirect(url_for('payments.overview'))
 
 @payments.route("/payment/overview", methods=['GET', 'POST'])
 @login_required

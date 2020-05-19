@@ -15,7 +15,7 @@ class GroupPay(FlaskForm):
 class PaymentForm(Form):
     causale = StringField('Causale', validators=[DataRequired()])
     modo = StringField('Modalita', validators=[DataRequired()])
-    doc = FileField('Allegato')
+    doc = FileField('Allegato (formati ammessi: txt, pdf, png, jpg, jpeg)')
     data = DateField('Data Effettuazione',
                        validators=[DataRequired()], format='%Y-%m-%d')
     teammembers = FieldList(FormField(GroupPay))

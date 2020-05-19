@@ -104,6 +104,18 @@ a.article-title:hover {
     border-color: #00225d
 }
 
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d
+}
+
+.btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d
+}
+
+
 .btn-outline-info {
     color: #003063;
     border-color: #003063
