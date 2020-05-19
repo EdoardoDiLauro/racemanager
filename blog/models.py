@@ -7,7 +7,7 @@ from flask_login import UserMixin
 def load_user(user_id):
     return Race.query.get(int(user_id))
 
-links=db.Table('links',
+linksag=db.Table('linksag',
             db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), nullable=False),
             db.Column('gruppo_id', db.Integer, db.ForeignKey('gruppo.id'), nullable=False)
 )
@@ -17,8 +17,20 @@ linksgm=db.Table('linksgm',
             db.Column('gruppo_id', db.Integer, db.ForeignKey('gruppo.id'), nullable=False)
 )
 
+linksar=db.Table('linksar',
+            db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), nullable=False),
+            db.Column('routine_id', db.Integer, db.ForeignKey('routine.id'), nullable=False)
+)
 
+linksgr=db.Table('linksgr',
+            db.Column('gruppo_id', db.Integer, db.ForeignKey('gruppo.id'), nullable=False),
+            db.Column('routine_id', db.Integer, db.ForeignKey('routine.id'), nullable=False)
+)
 
+linksgp=db.Table('linksgp',
+            db.Column('gruppo_id', db.Integer, db.ForeignKey('gruppo.id'), nullable=False),
+            db.Column('payment_id', db.Integer, db.ForeignKey('payment.id'), nullable=False)
+)
 
 class Race(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,6 +42,11 @@ class Race(db.Model, UserMixin):
     fine = db.Column(db.DateTime, nullable=False)
     turni = db.relationship('Activity', backref='gara', lazy=True)
     gruppi = db.relationship('Gruppo', backref='gara', lazy=True)
+    tot=db.Column(db.Integer, nullable=True)
+    totcp=db.Column(db.Integer, nullable=True)
+    totcpp=db.Column(db.Integer, nullable=True)
+    totcpq=db.Column(db.Integer, nullable=True)
+    onhold=db.Column(db.Boolean)
 
 
     def __repr__(self):
@@ -49,8 +66,12 @@ class Activity(db.Model):
     durata = db.Column(db.Interval, nullable=True)
     note = db.Column(db.String(200), nullable=True)
     race_id = db.Column(db.Integer, db.ForeignKey('race.id'), nullable=False)
-    gruppi = db.relationship('Gruppo', secondary=links, backref='acts', lazy=True)
-
+    gruppi = db.relationship('Gruppo', secondary=linksag, backref='acts', lazy=True)
+    routines = db.relationship('Routine', secondary=linksar, backref='steps', lazy=True)
+    tot=db.Column(db.Integer, nullable=True)
+    totcp=db.Column(db.Integer, nullable=True)
+    totcpp=db.Column(db.Integer, nullable=True)
+    totcpq=db.Column(db.Integer, nullable=True)
 
     def __repr__(self):
         return "Activity('{self.luogo}', '{self.inizio}')"
@@ -59,9 +80,11 @@ class Activity(db.Model):
 class Gruppo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
-    activities = db.relationship('Activity', secondary=links, backref='assegnati', lazy=True)
+    activities = db.relationship('Activity', secondary=linksag, backref='assegnati', lazy=True)
     race_id = db.Column(db.Integer, db.ForeignKey('race.id'), nullable=False)
     marshals = db.relationship('Marshal', secondary=linksgm, backref='grs', lazy=True)
+    routines = db.relationship('Routine', secondary=linksgr, backref='following', lazy=True)
+    payments = db.relationship('Payment', secondary=linksgp, backref='paying', lazy=True)
     coordinatore = db.Column(db.Integer, db.ForeignKey('marshal.id'), nullable=True)
     cp=db.Column(db.Integer, default=0)
     cpp=db.Column(db.Integer, default=0)
@@ -91,7 +114,36 @@ class Marshal(db.Model):
     def __repr__(self):
         return "Marshal('{self.id}', '{self.nome}', '{self.cognome}')"
 
+class Routine(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    note = db.Column(db.String(200), nullable=True)
+    activities = db.relationship('Activity', secondary=linksar, backref='using', lazy=True)
+    race_id = db.Column(db.Integer, db.ForeignKey('race.id'), nullable=False)
+    gruppi = db.relationship('Gruppo', secondary=linksgr, backref='rts', lazy=True)
+    req = db.Column(db.Integer, nullable=True)
+    tot = db.Column(db.Integer, nullable=True)
+    totcp = db.Column(db.Integer, nullable=True)
+    totcpp = db.Column(db.Integer, nullable=True)
+    totcpq = db.Column(db.Integer, nullable=True)
+    avgd = db.Column(db.Interval, nullable=True)
 
+
+    def __repr__(self):
+        return "Routine('{self.id}')"
+
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    image_file = db.Column(db.String(20), nullable=True)
+    tipo = db.Column(db.String(30), nullable=False)
+    inizio = db.Column(db.DateTime, nullable=False)
+    causale = db.Column(db.String(30), nullable=True)
+    note = db.Column(db.String(200), nullable=True)
+    race_id = db.Column(db.Integer, db.ForeignKey('race.id'), nullable=False)
+    gruppi = db.relationship('Gruppo', secondary=linksgp, backref='payed', lazy=True)
+
+    def __repr__(self):
+        return "Payment('{self.id}')"
 
 
 

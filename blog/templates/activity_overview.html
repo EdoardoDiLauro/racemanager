@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h2>Impieghi</h2>
-{% for stage in stagelist %}
+    <h2>Alloggi</h2>
+{% for stage in staylist %}
      <article class="media content-section">
           <div class="media-body">
          <div class="article-metadata">
-             <h3><a class="mr-2">{{ stage.luogo }} </a></h3>
-             <h4><a>Inizio: {{stage.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Fine: {{stage.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
+             <h3><a class="mr-2">{{ stage.struttura }} </a></h3>
+             <h4><a>Pernottamento: {{stage.inizio.strftime(format='%Y-%m-%d')}} </a></h4>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
               <a class="btn btn-danger btn-sm m-1" href="{{ url_for('activities.delete_activity', activity_id=stage.id) }}">Elimina</a>
          </div>
-         <table class="table table-hover table-responsive" align="center">
+         <table class="table table-hover table-responsive-lg" align="center">
       <thead>
         <tr>
           <th scope="col">Gruppo</th>
@@ -33,4 +33,91 @@
           </div>
      </article>
 {% endfor %}
+{% if staylist.count()==0 %}
+<article class="media content-section">
+          <div class="media-body">
+                          <h4><a>Nessun Alloggio inserito</a></h4>
+          </div>
+</article>
+{% endif %}
+ <h2>Impieghi</h2>
+{% for stage in stagelist %}
+     <article class="media content-section">
+          <div class="media-body">
+         <div class="article-metadata">
+             <h3><a class="mr-2">{{ stage.luogo }} </a></h3>
+             <h4><a>Inizio: {{stage.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Fine: {{stage.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
+              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('activities.delete_activity', activity_id=stage.id) }}">Elimina</a>
+         </div>
+         <table class="table table-hover table-responsive-lg" >
+      <thead>
+        <tr>
+          <th scope="col">Gruppo</th>
+          <th scope="col">Totali</th>
+            <th scope="col">CP</th>
+            <th scope="col">CPP</th>
+            <th scope="col">CPQ</th>
+        </tr>
+      </thead>
+        {% for group in stage.gruppi %}
+        <tr>
+            <th scope="row">{{group.nome}}</th>
+            <th scope="row">{{group.cp+group.cpp+group.cpq}} </th>
+            <th scope="row">{{group.cp}}</th>
+            <th scope="row">{{group.cpp}}</th>
+            <th scope="row">{{group.cpq}}</th>
+        </tr>
+        {% endfor %}
+    </table>
+          </div>
+     </article>
+{% endfor %}
+{% if stagelist.count()==0 %}
+<article class="media content-section">
+          <div class="media-body">
+                          <h4><a>Nessun Impiego inserito</a></h4>
+          </div>
+</article>
+{% endif %}
+<h2>Trasporti</h2>
+{% for stage in transportlist %}
+     <article class="media content-section">
+          <div class="media-body">
+         <div class="article-metadata">
+             <h3><a class="mr-2">{{stage.vettore}} - {{ stage.partenza }} </a></h3>
+             <h4><a>Partenza: {{stage.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Arrivo: {{stage.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
+              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('activities.delete_activity', activity_id=stage.id) }}">Elimina</a>
+         </div>
+         <table class="table table-hover table-responsive-lg" align="center">
+      <thead>
+        <tr>
+          <th scope="col">Gruppo</th>
+          <th scope="col">Totali</th>
+            <th scope="col">CP</th>
+            <th scope="col">CPP</th>
+            <th scope="col">CPQ</th>
+        </tr>
+      </thead>
+        {% for group in stage.gruppi %}
+        <tr>
+            <th scope="row">{{group.nome}}</th>
+            <th scope="row">{{group.cp+group.cpp+group.cpq}} </th>
+            <th scope="row">{{group.cp}}</th>
+            <th scope="row">{{group.cpp}}</th>
+            <th scope="row">{{group.cpq}}</th>
+        </tr>
+        {% endfor %}
+    </table>
+          </div>
+     </article>
+{% endfor %}
+{% if transportlist.count()==0 %}
+<article class="media content-section">
+          <div class="media-body">
+                          <h4><a>Nessun Trasporto inserito</a></h4>
+          </div>
+</article>
+{% endif %}
 {% endblock content%}

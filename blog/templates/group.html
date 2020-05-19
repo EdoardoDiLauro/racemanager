@@ -10,7 +10,7 @@
 <article class="media content-section">
           <div class="media-body">
               {% if group.activities[loop.index-2].tipo!='stay'%}
-             <h3><a class="mr-2">BREAK: {{group.activities[loop.index-1].inizio-group.activities[loop.index-2].fine}} </a></h3>
+             <h3><a class="mr-2">Intervallo: {{group.activities[loop.index-1].inizio-group.activities[loop.index-2].fine}} </a></h3>
               {% endif %}
               <div class="card">
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('groups.add_task', group_id=group.id, previous=group.activities[loop.index-2].id, following=group.activities[loop.index-1].id) }}">Imposta Attività</a>
@@ -29,7 +29,7 @@
 
           </div>
      </article>
-{% elif activity.tipo=='travel'%}
+{% elif activity.tipo=='transport'%}
      <article class="media content-section">
           <div class="media-body">
              <h3><a class="mr-2">{{ activity.vettore }} da {{activity.partenza }} a {{activity.luogo}} </a></h3>
@@ -77,6 +77,9 @@
     <h3>CP: {{group.cp}}</h3>
     <h3>CPP: {{group.cpp}}</h3>
     <h3>CPQ: {{group.cpq}}</h3>
+    {% if coordinatore!=None %}
+    <h3>Coordinatore: {{coordinatore.nome}} {{coordinatore.cognome}} - lic. {{coordinatore.licenza}}</h3>
+    {% endif %}
 </div>
 {% endblock feed %}
 

@@ -13,6 +13,9 @@ login_manager.login_view = 'races.login'
 login_manager.login_message_category = 'info'
 mail = Mail()
 
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -28,6 +31,8 @@ def create_app(config_class=Config):
     from blog.main.routes import main
     from blog.activities.routes import activities
     from blog.groups.routes import groups
+    from blog.routines.routes import routines
+    from blog.payments.routes import payments
 
 
     #from blog.errors.handlers import errors
@@ -38,6 +43,10 @@ def create_app(config_class=Config):
     app.register_blueprint(main)
     app.register_blueprint(activities)
     app.register_blueprint(groups)
+    app.register_blueprint(routines)
+    app.register_blueprint(payments)
+
+
     #app.register_blueprint(errors)
 
 

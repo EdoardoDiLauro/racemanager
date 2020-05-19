@@ -177,5 +177,8 @@
     <h3>CP: {{group.cp}}</h3>
     <h3>CPP: {{group.cpp}}</h3>
     <h3>CPQ: {{group.cpq}}</h3>
+    {% if coordinatore!=None %}
+    <h3>Coordinatore: {{coordinatore.nome}} {{coordinatore.cognome}} - lic. {{coordinatore.licenza}}</h3>
+    {% endif %}
 </div>
 {% endblock feed%}

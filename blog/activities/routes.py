@@ -49,7 +49,7 @@ def create_transport():
         return redirect(url_for('main.home'))
     form = TransportForm()
     if form.validate_on_submit():
-        new_activity=Activity(tipo='transport', partenza=form.partenza.data,luogo=form.luogo.data,vettore=form.vettore.data,inizio=form.inizio.data,fine=form.fine.data,unita=form.unita.data, note=form.note.data, race_id=current_user.id)
+        new_activity=Activity(tipo='transport', partenza=form.partenza.data,luogo=form.luogo.data,vettore=form.vettore.data,inizio=form.inizio.data,fine=form.fine.data,note=form.note.data, race_id=current_user.id)
         db.session.add(new_activity)
         db.session.commit()
         flash('Trasporto inserito con successo', 'success')

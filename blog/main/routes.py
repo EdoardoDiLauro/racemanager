@@ -10,8 +10,8 @@ def home():
     return render_template('home.html')
 
 
-@main.route("/about")
-def about():
-    return render_template('about.html',)
+@main.route("/faq")
+def faq():
+    return render_template('faq.html',)
 
 

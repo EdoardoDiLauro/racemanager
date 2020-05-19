@@ -189,9 +189,13 @@ def group(group_id):
     if group.race_id != current_user.id:
         abort(403)
 
+    if group.coordinatore:
+        coordinatore=Marshal.query.get_or_404(group.coordinatore)
+    else: coordinatore=None
+
     activities=Activity.query.filter(Activity.gruppi.any(id=group_id)).order_by(Activity.inizio)
 
-    return render_template('group.html', title=group.nome , group=group, activities=activities)
+    return render_template('group.html', title=group.nome , coordinatore=coordinatore,group=group, activities=activities)
 
 @groups.route("/group/<int:group_id>/addtask", methods=['GET', 'POST'])
 @login_required
@@ -200,6 +204,9 @@ def add_task(group_id):
     if group.race_id != current_user.id:
         abort(403)
 
+    if group.coordinatore:
+        coordinatore=Marshal.query.get_or_404(group.coordinatore)
+    else: coordinatore=None
     previous= request.values.get('previous')
     following= request.values.get('following')
 
@@ -207,7 +214,7 @@ def add_task(group_id):
     form = AddActivityForm()
     form.stage.choices= [(-1," ")]+[(item.id, item.luogo) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="stage", ~Activity.gruppi.any(id=group_id))]
     form.stay.choices= [(-1," ")]+[(item.id, item.struttura) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="stay", ~Activity.gruppi.any(id=group_id))]
-    form.transport.choices= [(-1," ")]+[(item.id, item.partenza) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="travel", ~Activity.gruppi.any(id=group_id))]
+    form.transport.choices= [(-1," ")]+[(item.id, item.partenza) for item in db.session.query(Activity).filter(Activity.race_id==current_user.id, Activity.tipo=="transport", ~Activity.gruppi.any(id=group_id))]
 
     if form.submit.data and form.validate_on_submit():
         if form.stage.data!=-1:
@@ -226,7 +233,7 @@ def add_task(group_id):
         flash('Impiego inserito con successo', 'success')
         return redirect(url_for('groups.group', group_id=group.id))
 
-    return render_template('addtask.html', title= "Assegnazione Impiego" , group=group, form=form, legend="Assegnazione Incarico")
+    return render_template('addtask.html', title= "Assegnazione Impiego" ,coordinatore=coordinatore, group=group, form=form, legend="Assegnazione Incarico")
 
 @groups.route("/group/<int:group_id>/remove/<int:activity_id>", methods=['GET', 'POST'])
 @login_required
@@ -247,6 +254,10 @@ def update_group(group_id):
     if group.race_id != current_user.id:
         abort(403)
 
+    if group.coordinatore:
+        coordinatore=Marshal.query.get_or_404(group.coordinatore)
+    else: coordinatore=None
+    
     teamform = GroupForm()
     filterform = FilterForm()
     filterform.acf.choices = [("all", "Tutti gli AC"), ("DSA", "DSA")] + [(str(item)[3:8], str(item)[3:8]) for item in
@@ -385,7 +396,7 @@ def update_group(group_id):
         flash('Gruppo modificato con successo', 'success')
         return redirect(url_for('groups.update_group', group_id=group_id, groupwip=teamform.nome.data))
 
-    return render_template('update_group.html', title="Modifica Gruppo", group=group, group_id=group_id, form=teamform, legend='Aggiunta Personale', filterform=filterform, filterlegend='Filtro')
+    return render_template('update_group.html', title="Modifica Gruppo", coordinatore=coordinatore,group=group, group_id=group_id, form=teamform, legend='Aggiunta Personale', filterform=filterform, filterlegend='Filtro')
 
 
 
@@ -397,7 +408,9 @@ def alter_group(group_id):
     if group.race_id != current_user.id:
         abort(403)
 
-    coordinatore=Marshal.query.get_or_404(group.coordinatore)
+    if group.coordinatore:
+        coordinatore=Marshal.query.get_or_404(group.coordinatore)
+    else: coordinatore=None
 
     teamform = GroupForm()
     filterform = FilterForm()

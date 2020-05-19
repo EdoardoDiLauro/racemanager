@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{legend}}</legend>
+            <table class="table table-hover table-responsive">
+      <thead>
+        <tr>
+            <th scope="col">Validazione</th>
+            <th scope="col">Status</th>
+            <th scope="col">ID</th>
+          <th scope="col">Denominazione</th>
+        </tr>
+      </thead>
+        {% for race in form.races %}
+        <tr class="table-row">
+            <th scope="row">
+            {% for subfield in race.onhold %}
+                {{ subfield.label }}
+                {{ subfield }}
+            {% endfor %}
+            </th>
+            <th scope="row">{{race.status(readonly=True)}}</th>
+            <th scope="row">{{race.rid}}</th>
+            <th scope="row">{{race.nome(readonly=True)}}</th>
+        </tr>
+        {% endfor %}
+    </table>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

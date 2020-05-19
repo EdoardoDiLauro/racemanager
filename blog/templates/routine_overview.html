@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Routines</h2>
+{% for routine in routines %}
+<article class="media content-section">
+          <div class="media-body">
+         <div class="article-metadata">
+             <h3><a class="mr-2">{{ routine.nome }} </a></h3>
+             <h4><a>Metrics </a></h4>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('routines.routine', routine_id=routine.id) }}">Modifica</a>
+              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('routines.delete_routine', routine_id=routine.id) }}">Elimina</a>
+         </div>
+{% for activity in routine.activities %}
+{% if activity.tipo=='stage'%}
+     <article class="media content-section">
+          <div class="media-body">
+             <h3><a class="mr-2">{{ activity.luogo }} </a></h3>
+             <h4><a>Inizio: {{activity.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Fine: {{activity.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
+          </div>
+     </article>
+{% elif activity.tipo=='transport'%}
+     <article class="media content-section">
+          <div class="media-body">
+             <h3><a class="mr-2">{{ activity.vettore }} da {{activity.partenza }} a {{activity.luogo}} </a></h3>
+             <h4><a>Partenza: {{activity.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Arrivo: {{activity.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
+          </div>
+     </article>
+{% elif activity.tipo=='stay'%}
+     <article class="media content-section">
+          <div class="media-body">
+             <h3><a class="mr-2">{{ activity.struttura }} </a></h3>
+             <h4><a>Pernottamento: {{activity.inizio.strftime(format='%Y-%m-%d')}} </a></h4>
+          </div>
+     </article>
+{% endif %}
+{% endfor %}
+          </div>
+     </article>
+{% endfor %}
+{% endblock content %}

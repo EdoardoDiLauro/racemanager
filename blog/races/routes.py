@@ -3,7 +3,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from blog import db, bcrypt
 from blog.models import Race
 from blog.races.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
-                              RequestResetForm, ResetPasswordForm, ContactForm)
+                              RequestResetForm, ResetPasswordForm, ContactForm, RaceForm, RaceValidationForm)
 from blog.races.utils import save_picture, send_reset_email
 from flask_mail import Message
 from blog import mail
@@ -18,7 +18,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         pass1 = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        new_user=Race(username=form.username.data,email=form.email.data, inizio=form.inizio.data, fine=form.fine.data ,password=pass1)
+        new_user=Race(username=form.username.data,email=form.email.data, inizio=form.inizio.data, fine=form.fine.data ,password=pass1, onhold=True)
         db.session.add(new_user)
         db.session.commit()
         flash('Account creato con successo', 'success')
@@ -33,13 +33,52 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = Race.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        if user and bcrypt.check_password_hash(user.password, form.password.data) and user.onhold==0:
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('races.account'))
+        elif form.email.data=='admin@rm-racemanager.com' and form.password.data=='admin':
+            return redirect(url_for('races.adminpanel', admin=1))
+        elif user.onhold==1:
+            flash('Errore nel login, verificare abilitazione account', 'danger')
         else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
+            flash('Errore nel login, verificare credenziali', 'danger')
     return render_template('login.html', title='Accesso', form=form)
+
+@races.route("/adminpanel", methods=['GET', 'POST'])
+def adminpanel():
+    if not request.values.get('admin'):
+        return redirect(url_for('main.home'))
+
+    teamform= RaceValidationForm()
+    userlist=Race.query.all()
+
+    for r in userlist:
+        rform= RaceForm()
+        rform.rid=r.id
+        rform.nome=r.username
+        if r.onhold==True:
+            rform.status = "In Attesa"
+        else: rform.status= "Convalidato"
+
+
+        teamform.races.append_entry(rform)
+
+    if teamform.submit.data:
+        for data in teamform.races.entries:
+            r = Race.query.filter_by(id=data.rid.data).first()
+            if data.onhold.data == 0:
+                r.onhold = False
+            elif data.onhold.data == 1:
+                r.onhold = True
+
+            db.session.commit()
+
+
+        return redirect(url_for('races.adminpanel', admin=1))
+
+    return render_template('adminpanel.html', title='Gestione Manifestazioni', legend='Gestione Manifestazioni', form=teamform)
+
 
 
 @races.route("/logout")
@@ -77,7 +116,7 @@ def reset_request():
     if form.validate_on_submit():
         user = Race.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password.', 'info')
+        flash('Istruzioni per il reset password inviate, controllare la propria casella email.', 'info')
         return redirect(url_for('races.login'))
     return render_template('reset_request.html', title='Reset Password', form=form)
 
@@ -95,40 +134,15 @@ def reset_token(token):
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user.password = hashed_password
         db.session.commit()
-        flash('Your password has been updated! You are now able to log in', 'success')
+        flash('Password aggiornata! Accesso autorizzato', 'success')
         return redirect(url_for('races.login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
 
-@races.route("/bookings", methods=['GET', 'POST'])
-@login_required
-def bookings():
-    bookings = Booking.query.filter_by(customer=current_user).order_by(Booking.date_booked.desc())
-    return render_template('bookings.html', bookings=bookings)
-
-@races.route("/booking/<int:booking_id>/delete", methods=['GET','POST'])
-@login_required
-def delete_booking(booking_id):
-    booking = Booking.query.get_or_404(booking_id)
-    if booking.customer != current_user:
-        abort(403)
-    travel = Travel.query.filter_by(id=booking.trip.id).first()
-    travel.available = travel.available + 1
-    db.session.delete(booking)
-    db.session.commit()
-    flash('Your booking has been deleted!', 'success')
-    return redirect(url_for('main.home'))
 
 
-@races.route("/user/<string:username>/contact", methods=['GET','POST'])
-@login_required
-def contact_user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    form = ContactForm()
-    if form.validate_on_submit():
-        msg = Message(form.subject.data, body=form.body.data, sender=current_user.email, recipients=[user.email])
-        mail.send(msg)
-        flash('Your message has been sent!', 'success')
-        return redirect(url_for('races.user_posts', username=username))
-    return render_template('contact.html', title='Contact User', form=form, dest=user)
+
+
+
+
 
 

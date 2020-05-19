@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Pagamenti</h2>
+ <table class="table table-hover table-responsive" align="center">
+      <thead>
+        <tr>
+          <th scope="col">Causale</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Data</th>
+            <th scope="col">File</th>
+            <th scope="col">DL</th>
+        </tr>
+      </thead>
+{% for pay in paylist %}        <tr>
+            <th scope="row">{{pay.causale}}</th>
+            <th scope="row">{{pay.tipo}}</th>
+            <th scope="row">{{pay.inizio}}</th>
+            <th scope="row"><a class="btn btn-danger btn-sm m-1" href="{{ url_for('payments.uploaded_file', filename=pay.image_file) }}">{{pay.image_file}}</a></th>
+             <th scope="row"><a class="btn btn-sm m-1" href="{{ url_for('payments.download_file', filename=pay.image_file, payment_id=pay.causale) }}">{{pay.image_file}}</a></th>
+ </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}

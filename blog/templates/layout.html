@@ -47,7 +47,7 @@
                           <div class="dropdown-divider"></div>
                             <h6 class="dropdown-header">Inserimento</h6>
                             <a class="dropdown-item" href="{{ url_for('activities.create_stage') }}">Impiego</a>
-                            <a class="dropdown-item" href="{{ url_for('activities.create_stay') }}">Struttura</a>
+                            <a class="dropdown-item" href="{{ url_for('activities.create_stay') }}">Alloggio</a>
                             <a class="dropdown-item" href="{{ url_for('activities.create_transport') }}">Trasporto</a>
                         </div>
                     </li>
@@ -57,6 +57,22 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                           <a class="dropdown-item" href="{{ url_for('groups.overview') }}">Panoramica</a>
                             <a class="dropdown-item" href="{{ url_for('groups.new_group') }}">Inserimento</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Routine</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="{{ url_for('routines.overview') }}">Panoramica</a>
+                            <a class="dropdown-item" href="{{ url_for('routines.new_routine') }}">Inserimento</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Pagamenti</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="{{ url_for('payments.overview') }}">Panoramica</a>
+                            <a class="dropdown-item" href="{{ url_for('payments.new_payment') }}">Inserimento</a>
                         </div>
                     </li>
                     <a class="nav-item nav-link" href="{{ url_for('races.account') }}">Aggiornamento Dati</a>

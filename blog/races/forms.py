@@ -1,8 +1,8 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, Form
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, IntegerField, RadioField, FormField, FieldList
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Optional
 from flask_login import current_user
 from blog.models import Race
 
@@ -53,7 +53,7 @@ class UpdateAccountForm (FlaskForm) :
                        validators=[DataRequired()])
     fine = DateField('Data Fine',
                      validators=[DataRequired()])
-    picture = FileField('Logo Gara', validators=[FileAllowed(['jpg', 'png'])])
+    picture = FileField('Logo Gara (formati ammessi: .jpg, .png)', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Aggiorna')
 
     def validate_username(self, username):
@@ -87,10 +87,20 @@ class ResetPasswordForm(FlaskForm):
 
 
 class ContactForm(FlaskForm):
-    subject = StringField('Subject',
+    subject = StringField('Oggetto',
                            validators=[DataRequired()])
 
-    body = TextAreaField ('Body',
+    body = TextAreaField ('Messaggio',
                            validators=[DataRequired()])
 
-    submit = SubmitField('Send Email')
+    submit = SubmitField('Invia Email')
+
+class RaceForm(FlaskForm):
+    rid= IntegerField()
+    status=StringField()
+    nome=StringField()
+    onhold = RadioField('', choices=[(0, 'Si'),(1, 'No')], coerce=int, validators=[Optional()])
+
+class RaceValidationForm(Form):
+    races = FieldList(FormField(RaceForm))
+    submit=SubmitField('Convalida Utenti')
