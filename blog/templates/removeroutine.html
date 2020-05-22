@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{group.nome}} - {{legend}}</legend>
+            <div class="form-group">
+                {{ form.routine.label(class="form-control-label") }}
+                {% if form.routine.errors %}
+                    {{ form.routine(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.routine.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.routine(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.removeone(class="btn btn-outline-info") }}
+        </div>
+        <div class="form-group">
+            {{ form.removeall(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}
+{% block feed %}
+<div class="content-section">
+    <ul class="nav flex-column nav-pills nav-fill">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('groups.group', group_id=group.id) }}">Riepilogo Attività</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('groups.update_group', group_id=group.id) }}">Aggiunta Personale</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('groups.alter_group', group_id=group.id) }}">Gestione Personale</a>
+  </li>
+    </ul>
+</div>
+<div class="content-section">
+    <legend class="border-bottom mb-4">Informazioni Personale</legend>
+    <h3>Totale: {{group.cp+group.cpp+group.cpq}}</h3>
+    <h3>CP: {{group.cp}}</h3>
+    <h3>CPP: {{group.cpp}}</h3>
+    <h3>CPQ: {{group.cpq}}</h3>
+    {% if coordinatore!=None %}
+    <h3>Coordinatore: {{coordinatore.nome}} {{coordinatore.cognome}} - lic. {{coordinatore.licenza}}</h3>
+    {% endif %}
+</div>
+{% endblock feed %}

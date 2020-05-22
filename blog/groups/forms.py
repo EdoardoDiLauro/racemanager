@@ -33,6 +33,15 @@ class AddActivityForm(FlaskForm):
     transport = SelectField(u'Trasporto', coerce=int, validators=[Optional()])
     submit = SubmitField('Inserimento')
 
+class AddRoutineForm(FlaskForm):
+    routine = SelectField(u'Routine', coerce=int, validators=[Optional()])
+    submit = SubmitField('Aggiungere')
+    submitover = SubmitField('Reimpostare')
+    removeone = SubmitField('Rimuovere Routine Selezionata')
+    removeall = SubmitField('Reset Completo Routines')
+
+
+
 class FilterForm(FlaskForm):
     licenzaf = IntegerField('Numero Licenza', validators=[Optional(strip_whitespace=True)])
     nomef = StringField('Nome')

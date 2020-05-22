@@ -1,16 +1,18 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h2>{{routine.nome}} - Riepilogo Attività</h2>
+    <h2>{{routine.nome}} - Riepilogo Attività Routine</h2>
 
     <div class="card">
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('routines.add_task', routine_id=routine.id) }}">Imposta Attività</a>
      </div>
-{% for activity in activities %}
+{% for activity in activities|sort(attribute='inizio') %}
 {% if loop.index>1 %}
 <article class="media content-section">
           <div class="media-body">
-              {% if routine.activities[loop.index-2].tipo!='stay'%}
-             <h3><a class="mr-2">Intervallo: {{routine.activities[loop.index-1].inizio-routine.activities[loop.index-2].fine}} </a></h3>
+              {% if activities[loop.index-2].tipo!='stay' and activities[loop.index-1].tipo!='stay'%}
+             <h3><a class="mr-2">Intervallo: {{activity.inizio-loop.previtem.fine}} </a></h3>
+              {% elif activities[loop.index-2].tipo=='stay' and activities[loop.index-3]%}
+              <h3><a class="mr-2">Riposo: {{activity.inizio-activities[loop.index-3].fine}} </a></h3>
               {% endif %}
               <div class="card">
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('routines.add_task', routine_id=routine.id, previous=routine.activities[loop.index-2].id, following=routine.activities[loop.index-1].id) }}">Imposta Attività</a>

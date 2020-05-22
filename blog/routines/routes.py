@@ -1,6 +1,8 @@
 from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
+from sqlalchemy import func
+
 from blog import db
 from blog.models import Race, Marshal,Activity, Gruppo, Routine
 from blog.routines.forms import RoutineForm, AddActivityForm
@@ -28,8 +30,6 @@ def new_routine():
 @login_required
 def overview():
     routines = Routine.query.filter_by(race_id=current_user.id).all()
-
-
 
     return render_template('routine_overview.html', title ='Panoramica Routines', routines=routines)
 
@@ -88,13 +88,27 @@ def add_task(routine_id):
             stage = Activity.query.get_or_404(form.stage.data)
             routine.activities.append(stage)
             db.session.commit()
+            for gr in routine.gruppi:
+                gr.activities.append(stage)
+                db.session.commit()
         elif form.stay.data!=-1:
             stay = Activity.query.get_or_404(form.stay.data)
             routine.activities.append(stay)
             db.session.commit()
+            for gr in routine.gruppi:
+                gr.activities.append(stay)
+                db.session.commit()
         elif form.transport.data!=-1:
             transport = Activity.query.get_or_404(form.transport.data)
             routine.activities.append(transport)
+            db.session.commit()
+            for gr in routine.gruppi:
+                gr.activities.append(transport)
+                db.session.commit()
+
+        if routine.activities:
+            routine.req = db.session.query(func.avg(Activity.unita)).filter(Activity.routines.any(id=routine_id),
+                                                                            Activity.tipo == 'stage')
             db.session.commit()
 
         flash('Impiego inserito con successo', 'success')
@@ -102,7 +116,7 @@ def add_task(routine_id):
 
     return render_template('addtaskroutine.html', title= "Assegnazione Impiego" ,routine=routine,form=form, legend="Assegnazione Incarico")
 
-@routines.route("/group/<int:routine_id>/remove/<int:activity_id>", methods=['GET', 'POST'])
+@routines.route("/routine/<int:routine_id>/remove/<int:activity_id>", methods=['GET', 'POST'])
 @login_required
 def remove_task(routine_id, activity_id):
     routine = Routine.query.get_or_404(routine_id)
@@ -111,5 +125,13 @@ def remove_task(routine_id, activity_id):
     activity= Activity.query.get_or_404(activity_id)
     routine.activities.remove(activity)
     db.session.commit()
+    for gr in routine.gruppi:
+        gr.activities.remove(activity)
+        db.session.commit()
+
+    if routine.activities:
+        routine.req = db.session.query(func.avg(Activity.unita)).filter(Activity.routines.any(id=routine_id), Activity.tipo=='stage')
+        db.session.commit()
+
     flash('Impiego rimosso con successo', 'success')
     return redirect(url_for('routines.routine', routine_id=routine.id))

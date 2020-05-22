@@ -6,12 +6,13 @@
           <div class="media-body">
          <div class="article-metadata">
              <h3><a class="mr-2">{{ pay.causale }} </a></h3>
-             <h4><a>Data: {{pay.inizio.strftime(format='%Y-%m-%d')}} </a></h4>
+             <h4><a>Data: {{pay.inizio.strftime(format='%Y-%m-%d')}} | Modalità: {{pay.tipo}} </a></h4>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('payments.update_payment', payment_id=pay.id) }}">Modifica</a>
               <a class="btn btn-danger btn-sm m-1"  href="{{ url_for('payments.delete_payment', payment_id=pay.id) }}">Elimina</a>
          </div>
               <a class="btn btn-outline-info btn-sm m-1" href="{{ url_for('payments.uploaded_file', filename=pay.image_file) }}">Visualizza File: {{pay.image_file}}</a>
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('payments.download_file', filename=pay.image_file, payment_id=pay.causale) }}">Download</a>
+                        <div class="card-header">{{pay.note}}</div>
          <table class="table table-hover table-responsive-lg" align="center">
       <thead>
         <tr>

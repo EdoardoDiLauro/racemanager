@@ -1,16 +1,26 @@
 {% extends "layout.html" %}
 {% block content %}
     <h2>{{group.nome}} - Riepilogo Attività</h2>
-
+<article class="media content-section">
+              <div class="media-body">
     <div class="card">
+              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_routine', group_id=group.id) }}">Rimuovi Routine</a>
+                      <a class="btn btn-primary btn-sm m-1" href="{{ url_for('groups.add_routine', group_id=group.id) }}">Imposta Routine</a>
+
+     </div>
+              </div>
+</article>
+<div class="card">
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('groups.add_task', group_id=group.id) }}">Imposta Attività</a>
      </div>
 {% for activity in activities %}
 {% if loop.index>1 %}
 <article class="media content-section">
           <div class="media-body">
-              {% if group.activities[loop.index-2].tipo!='stay'%}
-             <h3><a class="mr-2">Intervallo: {{group.activities[loop.index-1].inizio-group.activities[loop.index-2].fine}} </a></h3>
+              {% if activities[loop.index-2].tipo!='stay' and activities[loop.index-1].tipo!='stay'%}
+             <h3><a class="mr-2">Intervallo: {{activity.inizio-loop.previtem.fine}} </a></h3>
+              {% elif activities[loop.index-2].tipo=='stay' and activities[loop.index-3]%}
+              <h3><a class="mr-2">Riposo: {{activity.inizio-activities[loop.index-3].fine}} </a></h3>
               {% endif %}
               <div class="card">
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('groups.add_task', group_id=group.id, previous=group.activities[loop.index-2].id, following=group.activities[loop.index-1].id) }}">Imposta Attività</a>
