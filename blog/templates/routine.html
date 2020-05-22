@@ -59,6 +59,60 @@
      </div>
 
 {% endblock content%}
+{% block feed %}
+<div class="content-section">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{legend}}</legend>
+            <div class="form-group">
+                {{ form.nome.label(class="form-control-label") }}
+                {% if form.nome.errors %}
+                    {{ form.nome(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.nome.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.nome(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.note.label(class="form-control-label") }}
+                {% if form.note.errors %}
+                    {{ form.note(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.note.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.note(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+<div class="content-section">
+    <legend class="border-bottom mb-4">Gruppi Associati</legend>
+{% for group in routine.gruppi %}
+    <div class="content-section">
+    <h4>{{group.nome}}</h4>
+    <h5>Personale: {{group.cp+group.cpp+group.cpq}}</h5>
+    <div class="card">
+    <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_routine', group_id=group.id, routine_id=routine.id) }}">Dissocia</a>
+    </div>
+    </div>
+{% endfor %}
+  </div>
+</div>
+
+{% endblock feed %}
+
 
 
 

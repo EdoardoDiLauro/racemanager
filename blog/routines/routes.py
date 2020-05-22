@@ -60,11 +60,22 @@ def routine(routine_id):
     if routine.race_id != current_user.id:
         abort(403)
 
-    form=RoutineForm()
-
     activities=Activity.query.filter(Activity.routines.any(id=routine_id)).order_by(Activity.inizio)
 
-    return render_template('routine.html', title='Dettaglio Routine',routine=routine, form=form, activities=activities)
+    form = RoutineForm()
+
+    if form.validate_on_submit():
+        routine.nome=form.nome.data
+        routine.note=form.note.data
+        db.session.commit()
+        flash('Routine aggiornata con successo', 'success')
+        return redirect(url_for('routines.routine', routine_id=routine.id))
+    elif request.method == 'GET':
+        form.nome.data=routine.nome
+        form.note.data=routine.note
+
+
+    return render_template('routine.html', title='Dettaglio Routine',routine=routine, form=form, activities=activities, legend='Aggiornamento dettagli')
 
 @routines.route("/routine/<int:routine_id>/addtask", methods=['GET','POST'])
 @login_required

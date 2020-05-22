@@ -261,52 +261,46 @@ def add_routine(group_id):
 
     return render_template('addroutine.html', title= "Assegnazione Routine" ,coordinatore=coordinatore, group=group, form=form, legend="Assegnazione Routine")
 
-@groups.route("/group/<int:group_id>/removeroutine", methods=['GET', 'POST'])
+@groups.route("/group/<int:group_id>/removeroutine/<int:routine_id>", methods=['GET', 'POST'])
 @login_required
-def remove_routine(group_id):
+def remove_routine(group_id, routine_id):
     group = Gruppo.query.get_or_404(group_id)
     if group.race_id != current_user.id:
         abort(403)
 
-    if group.coordinatore:
-        coordinatore=Marshal.query.get_or_404(group.coordinatore)
-    else: coordinatore=None
-    previous= request.values.get('previous')
-    following= request.values.get('following')
+    r = Routine.query.get_or_404(routine_id)
+    if r.race_id != current_user.id:
+        abort(403)
 
-    form = AddRoutineForm()
-    form.routine.choices = [(-1, " ")] + [(item.id, item.nome) for item in
-                                        db.session.query(Routine).filter(Routine.race_id == current_user.id,
-                                                                          Routine.gruppi.any(id=group_id))]
+    for activity in r.activities:
+                    group.activities.remove(activity)
+                    db.session.commit()
 
-    if form.removeone.data and form.validate_on_submit():
-        if form.routine.data!=-1:
-            r = Routine.query.get_or_404(form.routine.data)
-            for activity in r.activities:
-                            group.activities.remove(activity)
-                            db.session.commit()
+    r.gruppi.remove(group)
+    db.session.commit()
 
-            r.gruppi.remove(group)
-            db.session.commit()
+    flash('Routine rimossa con successo', 'success')
+    return redirect(url_for('groups.group', group_id=group.id))
 
-            flash('Routine rimossa con successo', 'success')
-            return redirect(url_for('groups.group', group_id=group.id))
 
-    if form.removeall.data and form.validate_on_submit():
-            for r in group.routines:
-                for activity in r.activities:
-                    for gr in activity.gruppi:
-                        if gr.id == group_id:
-                            group.activities.remove(activity)
-                            db.session.commit()
-                r.gruppi.remove(group)
-                db.session.commit()
+@groups.route("/group/<int:group_id>/removeallroutines", methods=['GET', 'POST'])
+@login_required
+def remove_allroutines(group_id):
+    group = Gruppo.query.get_or_404(group_id)
+    if group.race_id != current_user.id:
+        abort(403)
 
-            flash('Reset routine effettuato con successo', 'success')
-            return redirect(url_for('groups.group', group_id=group.id))
+    for r in group.routines:
+        for activity in r.activities:
+            for gr in activity.gruppi:
+                if gr.id == group_id:
+                    group.activities.remove(activity)
+                    db.session.commit()
+        r.gruppi.remove(group)
+        db.session.commit()
 
-    return render_template('removeroutine.html', title= "Rimozione Routine" ,coordinatore=coordinatore, group=group, form=form, legend="Rimozione Routine")
-
+    flash('Reset routine effettuato con successo', 'success')
+    return redirect(url_for('groups.group', group_id=group.id))
 
 @groups.route("/group/<int:group_id>/addtask", methods=['GET', 'POST'])
 @login_required

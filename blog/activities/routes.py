@@ -24,6 +24,70 @@ def create_stage():
         return redirect(url_for('activities.overview'))
     return render_template('create_stage.html', title='Inserimento Impiego', form=form, legend='Inserimento Impiego')
 
+@activities.route("/activity/stage/<int:activity_id>/update" , methods=['GET', 'POST'])
+@login_required
+def update_stage(activity_id):
+    if not current_user.is_authenticated:
+        flash('Attenzione effettuare login per accedere!', 'danger')
+        return redirect(url_for('main.home'))
+
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.race_id != current_user.id:
+        abort(403)
+
+    form = StageForm()
+
+    if form.validate_on_submit():
+        activity.luogo=form.luogo.data
+        activity.inizio=form.inizio.data
+        activity.fine=form.fine.data
+        activity.unita=form.unita.data
+        activity.durata=form.fine.data-form.inizio.data
+        activity.note=form.note.data
+        db.session.commit()
+        flash('Impiego inserito con successo', 'success')
+        return redirect(url_for('activities.overview'))
+    elif request.method == 'GET':
+        form.luogo.data=activity.luogo
+        form.inizio.data=activity.inizio
+        form.fine.data=activity.fine
+        form.unita.data=activity.unita
+        form.note.data=activity.note
+
+    return render_template('create_stage.html', title='Aggiornamento Impiego', form=form, legend='Aggiornamento Impiego')
+
+@activities.route("/activity/stay/<int:activity_id>/update" , methods=['GET', 'POST'])
+@login_required
+def update_stay(activity_id):
+    if not current_user.is_authenticated:
+        flash('Attenzione effettuare login per accedere!', 'danger')
+        return redirect(url_for('main.home'))
+
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.race_id != current_user.id:
+        abort(403)
+
+    form = StayForm()
+
+    if form.validate_on_submit():
+        activity.luogo=form.luogo.data
+        activity.inizio=form.inizio.data
+        activity.fine=form.fine.data
+        activity.unita=form.unita.data
+        activity.durata=form.fine.data-form.inizio.data
+        activity.note=form.note.data
+        db.session.commit()
+        flash('Impiego inserito con successo', 'success')
+        return redirect(url_for('activities.overview'))
+    elif request.method == 'GET':
+        form.luogo.data=activity.luogo
+        form.inizio.data=activity.inizio
+        form.fine.data=activity.fine
+        form.unita.data=activity.unita
+        form.note.data=activity.note
+
+    return render_template('create_stay.html', title='Aggiornamento Alloggio', form=form, legend='Aggiornamento Alloggio')
+
 @activities.route("/activity/stay" , methods=['GET', 'POST'])
 @login_required
 def create_stay():

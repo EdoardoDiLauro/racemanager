@@ -1,15 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
     <h2>{{group.nome}} - Riepilogo Attività</h2>
-<article class="media content-section">
-              <div class="media-body">
-    <div class="card">
-              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_routine', group_id=group.id) }}">Rimuovi Routine</a>
-                      <a class="btn btn-primary btn-sm m-1" href="{{ url_for('groups.add_routine', group_id=group.id) }}">Imposta Routine</a>
-
-     </div>
-              </div>
-</article>
 <div class="card">
               <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('groups.add_task', group_id=group.id) }}">Imposta Attività</a>
      </div>
@@ -91,6 +82,24 @@
     <h3>Coordinatore: {{coordinatore.nome}} {{coordinatore.cognome}} - lic. {{coordinatore.licenza}}</h3>
     {% endif %}
 </div>
+<div class="content-section">
+    <legend class="border-bottom mb-4">Routines Attive</legend>
+{% for routine in group.routines %}
+    <div class="content-section">
+    <h4>{{routine.nome}}</h4>
+    <h5>Fabbisogno: {{routine.req}}</h5>
+    <div class="card">
+    <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_routine', group_id=group.id, routine_id=routine.id) }}">Rimuovi Routine</a>
+    </div>
+    </div>
+{% endfor %}
+    <div class="card">
+              <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.remove_allroutines', group_id=group.id) }}">Rimuovi Tutte Le Routines</a>
+              <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('groups.add_routine', group_id=group.id) }}">Imposta Routine</a>
+     </div>
+  </div>
+</div>
+
 {% endblock feed %}
 
 

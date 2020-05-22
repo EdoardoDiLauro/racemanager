@@ -59,10 +59,6 @@ def update_payment(payment_id):
 
     form = PaymentForm()
 
-    form.causale.data=payment.causale
-    form.modo.data=payment.tipo
-    form.data.data=payment.inizio.date()
-    form.note.data=payment.note
 
     gs = Gruppo.query.filter_by(race_id=current_user.id).all()
 
@@ -93,10 +89,16 @@ def update_payment(payment_id):
                 gr = Gruppo.query.get_or_404(data.gid.data)
                 payment.gruppi.append(gr)
                 db.session.commit()
-        db.session.add(payment)
         db.session.commit()
         flash('Pagamento aggiornato con successo', 'success')
         return redirect(url_for('payments.overview'))
+    elif request.method == 'GET':
+        form.causale.data = payment.causale
+        form.modo.data = payment.tipo
+        form.data.data = payment.inizio.date()
+        form.note.data = payment.note
+
+
 
     return render_template('create_pay.html', title='Modifica Pagamento',
                            form=form, legend='Modifica Pagamento')
