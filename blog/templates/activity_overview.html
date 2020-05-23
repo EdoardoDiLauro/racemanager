@@ -5,9 +5,9 @@
      <article class="media content-section">
           <div class="media-body">
          <div class="article-metadata">
-             <h3><a class="mr-2">{{ stage.struttura }} </a></h3>
+             <h3><a class="mr-2">{{ stage.luogo }} </a></h3>
              <h4><a>Pernottamento: {{stage.inizio.strftime(format='%Y-%m-%d')}} </a></h4>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('activities.update_stay', activity_id=stage.id) }}">Modifica</a>
               <a class="btn btn-danger btn-sm m-1" href="{{ url_for('activities.delete_activity', activity_id=stage.id) }}">Elimina</a>
          </div>
                                       <div class="card-header">{{stage.note}}</div>
@@ -87,9 +87,9 @@
      <article class="media content-section">
           <div class="media-body">
          <div class="article-metadata">
-             <h3><a class="mr-2">{{stage.vettore}} - {{ stage.partenza }} </a></h3>
+             <h3><a class="mr-2">{{stage.vettore}} | {{ stage.partenza }} - {{stage.luogo}} </a></h3>
              <h4><a>Partenza: {{stage.inizio.strftime(format='%Y-%m-%d %H:%M')}}  Arrivo: {{stage.fine.strftime(format='%Y-%m-%d %H:%M')}} </a></h4>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Modifica</a>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('activities.update_transport', activity_id=stage.id) }}">Modifica</a>
               <a class="btn btn-danger btn-sm m-1" href="{{ url_for('activities.delete_activity', activity_id=stage.id) }}">Elimina</a>
          </div>
                                                     <div class="card-header">{{stage.note}}</div>

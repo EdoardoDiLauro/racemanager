@@ -45,7 +45,7 @@ def update_stage(activity_id):
         activity.durata=form.fine.data-form.inizio.data
         activity.note=form.note.data
         db.session.commit()
-        flash('Impiego inserito con successo', 'success')
+        flash('Impiego aggiornato con successo', 'success')
         return redirect(url_for('activities.overview'))
     elif request.method == 'GET':
         form.luogo.data=activity.luogo
@@ -70,23 +70,56 @@ def update_stay(activity_id):
     form = StayForm()
 
     if form.validate_on_submit():
+        endofday= datetime.combine(form.inizio.data, time(23,59,59))
         activity.luogo=form.luogo.data
-        activity.inizio=form.inizio.data
-        activity.fine=form.fine.data
+        activity.inizio=endofday
+        activity.fine=endofday
         activity.unita=form.unita.data
-        activity.durata=form.fine.data-form.inizio.data
         activity.note=form.note.data
         db.session.commit()
-        flash('Impiego inserito con successo', 'success')
+        flash('Alloggio aggiornato con successo', 'success')
         return redirect(url_for('activities.overview'))
     elif request.method == 'GET':
         form.luogo.data=activity.luogo
-        form.inizio.data=activity.inizio
-        form.fine.data=activity.fine
+        form.inizio.data=activity.inizio.date()
         form.unita.data=activity.unita
         form.note.data=activity.note
 
     return render_template('create_stay.html', title='Aggiornamento Alloggio', form=form, legend='Aggiornamento Alloggio')
+
+@activities.route("/activity/transport/<int:activity_id>/update" , methods=['GET', 'POST'])
+@login_required
+def update_transport(activity_id):
+    if not current_user.is_authenticated:
+        flash('Attenzione effettuare login per accedere!', 'danger')
+        return redirect(url_for('main.home'))
+
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.race_id != current_user.id:
+        abort(403)
+
+    form = TransportForm()
+
+    if form.validate_on_submit():
+        activity.partenza = form.partenza.data
+        activity.luogo = form.luogo.data
+        activity.vettore = form.vettore.data
+        activity.inizio = form.inizio.data
+        activity.fine = form.fine.data
+        activity.durata = form.fine.data - form.inizio.data
+        activity.note = form.note.data
+        db.session.commit()
+        flash('Trasporto aggiornato con successo', 'success')
+        return redirect(url_for('activities.overview'))
+    elif request.method == 'GET':
+        form.partenza.data = activity.partenza
+        form.luogo.data = activity.luogo
+        form.vettore.data = activity.vettore
+        form.inizio.data = activity.inizio
+        form.fine.data = activity.fine
+        form.note.data = activity.note
+
+    return render_template('create_transport.html', title='Aggiornamento Trasporto', form=form, legend='Aggiornamento Trasporto')
 
 @activities.route("/activity/stay" , methods=['GET', 'POST'])
 @login_required

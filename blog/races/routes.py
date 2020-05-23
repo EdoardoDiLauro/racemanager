@@ -34,13 +34,14 @@ def login():
     if form.validate_on_submit():
         user = Race.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data) and user.onhold==0:
+            if user.onhold == 1:
+                flash('Errore nel login, verificare abilitazione account', 'danger')
+                return redirect(url_for('races.login'))
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('races.account'))
         elif form.email.data=='admin@rm-racemanager.com' and form.password.data=='admin':
             return redirect(url_for('races.adminpanel', admin=1))
-        elif user.onhold==1:
-            flash('Errore nel login, verificare abilitazione account', 'danger')
         else:
             flash('Errore nel login, verificare credenziali', 'danger')
     return render_template('login.html', title='Accesso', form=form)

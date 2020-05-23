@@ -6,6 +6,7 @@
           <div class="media-body">
          <div class="article-metadata">
               <h3><a class="mr-2" >{{ group.nome }} | Totale: {{group.cp+group.cpp+group.cpq}} | CP: {{group.cp}} CPP: {{group.cpp}} CPQ: {{group.cpq}} </a></h3>
+             <a class="btn btn-outline-info btn-sm mt-1 mb-1" href="{{ url_for('groups.report', group_id=group.id) }}">Report PDF</a>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('groups.group', group_id=group.id) }}">Modifica</a>
               <a class="btn btn-danger btn-sm m-1" href="{{ url_for('groups.delete_group', group_id=group.id) }}">Elimina</a>
          </div>

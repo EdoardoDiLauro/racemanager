@@ -1,6 +1,6 @@
 import toolz
 from flask import (render_template, url_for, flash,
-                   redirect, request, abort, Blueprint)
+                   redirect, request, abort, Blueprint, send_file)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
@@ -182,6 +182,27 @@ def delete_group(group_id):
     db.session.commit()
     flash('Gruppo eliminato', 'success')
     return redirect(url_for('groups.overview'))
+
+@groups.route("/group/<int:group_id>/report", methods=['GET', 'POST'])
+@login_required
+def report(group_id):
+    group = Gruppo.query.get_or_404(group_id)
+    if group.race_id != current_user.id:
+        abort(403)
+
+    if group.coordinatore:
+        coordinatore=Marshal.query.get_or_404(group.coordinatore)
+    else: coordinatore=None
+
+    activities=Activity.query.filter(Activity.gruppi.any(id=group_id)).order_by(Activity.inizio)
+
+    topdf = render_template('group.html', title=group.nome , coordinatore=coordinatore,group=group, activities=activities)
+
+    todl = topdf.write_pdf()
+
+    return send_file(todl)
+
+
 
 @groups.route("/group/<int:group_id>", methods=['GET', 'POST'])
 @login_required
